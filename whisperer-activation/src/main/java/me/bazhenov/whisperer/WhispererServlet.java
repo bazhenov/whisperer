@@ -1,13 +1,11 @@
 package me.bazhenov.whisperer;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.MDCFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.OutputStreamAppender;
-import ch.qos.logback.core.filter.AbstractMatcherFilter;
-import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.encoder.Encoder;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -18,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ch.qos.logback.core.spi.FilterReply.ACCEPT;
-import static ch.qos.logback.core.spi.FilterReply.DENY;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -36,38 +31,54 @@ public class WhispererServlet extends HttpServlet {
 		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) getLogger(ROOT_LOGGER_NAME);
 		LoggerContext context = rootLogger.getLoggerContext();
 
-		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-		encoder.setCharset(UTF_8);
-		encoder.setPattern("%d{HH:mm:ss} [%thread] %.-1level %logger{36} - %msg%n%ex");
+		Encoder<ILoggingEvent> encoder = new JsonEncoder();
 		ActivationContext activationContext = new ActivationContext(context);
 		activationContext.registerAndStart(encoder);
 
-		String expectedUser = req.getParameter("user");
-		if (expectedUser == null) {
+		String key = req.getParameter("k");
+		String expectedValue = req.getParameter("v");
+		if (expectedValue == null || key == null || key.isEmpty()) {
 			resp.sendError(400);
 			return;
 		}
+		disableCache(resp);
+		resp.setHeader("Content-Type", "application/json; boundary=NL");
 
-		TurboFilter activator = createMdcActivator(expectedUser);
+		TurboFilter activator = createMdcActivator(key, expectedValue);
 		activationContext.registerAndStart(activator);
 
 		AsyncContext asyncContext = req.startAsync();
+
+
+		asyncContext.setTimeout(0);
+		OutputStreamAppender<ILoggingEvent> appender = new ClosingAsyncContextOutputStreamAppender<>(asyncContext);
+		appender.addFilter(new MdcFilter(key, expectedValue));
+		appender.setEncoder(encoder);
+		appender.setOutputStream(asyncContext.getResponse().getOutputStream());
+		activationContext.registerAndStart(appender);
+
+		rootLogger.addAppender(appender);
+		context.addTurboFilter(activator);
+
 		asyncContext.addListener(new AsyncListener() {
 			@Override
 			public void onComplete(AsyncEvent event) throws IOException {
 				context.getTurboFilterList().remove(activator);
+				rootLogger.detachAppender(appender);
 				activationContext.close();
 			}
 
 			@Override
 			public void onTimeout(AsyncEvent event) throws IOException {
 				context.getTurboFilterList().remove(activator);
+				rootLogger.detachAppender(appender);
 				activationContext.close();
 			}
 
 			@Override
 			public void onError(AsyncEvent event) throws IOException {
 				context.getTurboFilterList().remove(activator);
+				rootLogger.detachAppender(appender);
 				activationContext.close();
 			}
 
@@ -75,28 +86,17 @@ public class WhispererServlet extends HttpServlet {
 			public void onStartAsync(AsyncEvent event) throws IOException {
 			}
 		});
-		asyncContext.setTimeout(0);
-		OutputStreamAppender<ILoggingEvent> appender = new ClosingAsyncContextOutputStreamAppender<>(asyncContext);
-		appender.addFilter(new AbstractMatcherFilter<ILoggingEvent>() {
-			@Override
-			public FilterReply decide(ILoggingEvent event) {
-				return event.getMDCPropertyMap().getOrDefault("user", "").equals(expectedUser)
-					? ACCEPT
-					: DENY;
-			}
-		});
-		appender.setEncoder(encoder);
-		appender.setOutputStream(asyncContext.getResponse().getOutputStream());
-		activationContext.registerAndStart(appender);
-
-		rootLogger.addAppender(appender);
-
-		context.addTurboFilter(activator);
 	}
 
-	private static TurboFilter createMdcActivator(String expectedValue) {
+	private static void disableCache(HttpServletResponse resp) {
+		resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		resp.setHeader("Pragma", "no-cache");
+		resp.setIntHeader("Expires", 0);
+	}
+
+	private static TurboFilter createMdcActivator(String key, String expectedValue) {
 		MDCFilter mdcActivator = new MDCFilter();
-		mdcActivator.setMDCKey("user");
+		mdcActivator.setMDCKey(key);
 		mdcActivator.setValue(expectedValue == null ? "" : expectedValue);
 		mdcActivator.setOnMatch("ACCEPT");
 		return mdcActivator;

@@ -17,7 +17,6 @@ class ClosingAsyncContextOutputStreamAppender<E> extends OutputStreamAppender<E>
 	protected void writeOut(E event) throws IOException {
 		try {
 			super.writeOut(event);
-			getOutputStream().flush();
 		} catch (IOException e) {
 			// Устанавливаем таймаут в 1 мс, чтоб контейнер закрыл контекст. Явного способа закрытия контекста нет.
 			context.setTimeout(1);
