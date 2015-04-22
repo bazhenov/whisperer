@@ -18,12 +18,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 @EnableAutoConfiguration
 @Configuration
 @Controller
-public class Application {
+public class WhispererServer {
 
-	private static final Logger log = getLogger(Application.class);
+	private static final Logger log = getLogger(WhispererServer.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(WhispererServer.class, args);
 	}
 
 	@RequestMapping("/")

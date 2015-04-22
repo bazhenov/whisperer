@@ -1,5 +1,6 @@
 package me.bazhenov.whisperer;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.MDCFilter;
@@ -8,8 +9,6 @@ import ch.qos.logback.core.OutputStreamAppender;
 import ch.qos.logback.core.encoder.Encoder;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +21,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class WhispererServlet extends HttpServlet {
 
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) getLogger(ROOT_LOGGER_NAME);
+		Logger rootLogger = (Logger) getLogger(ROOT_LOGGER_NAME);
 		LoggerContext context = rootLogger.getLoggerContext();
 
 		Encoder<ILoggingEvent> encoder = new JsonEncoder();
@@ -49,7 +43,6 @@ public class WhispererServlet extends HttpServlet {
 
 		AsyncContext asyncContext = req.startAsync();
 
-
 		asyncContext.setTimeout(0);
 		OutputStreamAppender<ILoggingEvent> appender = new ClosingAsyncContextOutputStreamAppender<>(asyncContext);
 		appender.addFilter(new MdcFilter(key, expectedValue));
@@ -60,32 +53,8 @@ public class WhispererServlet extends HttpServlet {
 		rootLogger.addAppender(appender);
 		context.addTurboFilter(activator);
 
-		asyncContext.addListener(new AsyncListener() {
-			@Override
-			public void onComplete(AsyncEvent event) throws IOException {
-				context.getTurboFilterList().remove(activator);
-				rootLogger.detachAppender(appender);
-				activationContext.close();
-			}
-
-			@Override
-			public void onTimeout(AsyncEvent event) throws IOException {
-				context.getTurboFilterList().remove(activator);
-				rootLogger.detachAppender(appender);
-				activationContext.close();
-			}
-
-			@Override
-			public void onError(AsyncEvent event) throws IOException {
-				context.getTurboFilterList().remove(activator);
-				rootLogger.detachAppender(appender);
-				activationContext.close();
-			}
-
-			@Override
-			public void onStartAsync(AsyncEvent event) throws IOException {
-			}
-		});
+		asyncContext.addListener(new CleanupLoggerContextListener(context, rootLogger, activationContext, activator,
+			appender));
 	}
 
 	private static void disableCache(HttpServletResponse resp) {

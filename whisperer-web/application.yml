@@ -1,0 +1,4 @@
+endpoints:
+  - http://localhost:8081/whisperer
+  - http://localhost:8082/whisperer
+name: Hello

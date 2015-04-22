@@ -5,6 +5,8 @@ import ch.qos.logback.core.encoder.EncoderBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import static com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET;
 import static com.fasterxml.jackson.databind.SerializationFeature.FLUSH_AFTER_WRITE_VALUE;
@@ -20,10 +22,16 @@ class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
 	private static final byte[] nl = "\n".getBytes(UTF_8);
 
+	private final String hostName;
+
+	public JsonEncoder() throws UnknownHostException {
+		hostName = InetAddress.getLocalHost().getHostName();
+	}
+
 	@Override
 	public void doEncode(ILoggingEvent event) throws IOException {
 		LogEvent e = new LogEvent(event.getLoggerName(), event.getMessage(),
-			event.getThreadName(), "foo", event.getLevel().toString(), event.getMDCPropertyMap());
+			event.getThreadName(), hostName, event.getLevel().toString(), event.getMDCPropertyMap());
 		doEncode(e);
 	}
 
