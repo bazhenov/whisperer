@@ -30,7 +30,7 @@ class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
 	@Override
 	public void doEncode(ILoggingEvent event) throws IOException {
-		LogEvent e = new LogEvent(event.getLoggerName(), event.getMessage(),
+		LogEvent e = new LogEvent(event.getTimeStamp(), event.getLoggerName(), event.getFormattedMessage(),
 			event.getThreadName(), hostName, event.getLevel().toString(), event.getMDCPropertyMap());
 		doEncode(e);
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 public final class LogEvent {
 
+	private final long timeStamp;
 	private final String group;
 	private final String message;
 	private final String thread;
@@ -15,15 +16,21 @@ public final class LogEvent {
 	private final Map<String, String> mdc;
 
 	@JsonCreator
-	public LogEvent(@JsonProperty("group") String group, @JsonProperty("message") String message,
+	public LogEvent(@JsonProperty("timestamp") long timeStamp, @JsonProperty("group") String group, @JsonProperty("message") String message,
 									@JsonProperty("thread") String thread, @JsonProperty("host") String host,
 									@JsonProperty("level") String level, @JsonProperty("mdc") Map<String, String> mdc) {
+		this.timeStamp = timeStamp;
 		this.group = group;
 		this.message = message;
 		this.thread = thread;
 		this.host = host;
 		this.level = level;
 		this.mdc = mdc;
+	}
+
+	@JsonProperty("timestamp")
+	public long getTimeStamp() {
+		return timeStamp;
 	}
 
 	@JsonProperty("group")

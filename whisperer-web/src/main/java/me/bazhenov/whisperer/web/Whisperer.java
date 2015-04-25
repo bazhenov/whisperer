@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.net.URL;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -27,7 +28,7 @@ public class Whisperer {
 
 	@Bean
 	public WhispererController controller() {
-		return new WhispererController();
+		return new WhispererController(config.endpoints);
 	}
 
 	@PostConstruct
@@ -38,14 +39,14 @@ public class Whisperer {
 	@ConfigurationProperties
 	static class Config {
 
-		private List<String> endpoints = newArrayList();
+		private List<URL> endpoints = newArrayList();
 		private String name;
 
 		public void setName(String name) {
 			this.name = name;
 		}
 
-		public List<String> getEndpoints() {
+		public List<URL> getEndpoints() {
 			return endpoints;
 		}
 	}

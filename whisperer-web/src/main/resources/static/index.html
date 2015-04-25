@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Whisperer</title>
+
+	<!-- Bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<style type="text/css">
+		#mainForm {
+			text-align: center;
+		}
+
+		#keyName {
+			text-align: right;
+		}
+
+		#list {
+			width: 100%;
+		}
+
+		.time {
+			font-size: 14px;
+			white-space: nowrap;
+		}
+
+		.ms {
+			font-size: 12px;
+			color: gray;
+		}
+
+		.message {
+			word-wrap: break-word;
+			word-break: break-all;
+
+		}
+
+		.group {
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.thread {
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.filter {
+			padding: 10px;
+			vertical-align: top;
+		}
+
+		.filter A {
+
+		}
+
+		.filter UL {
+			background-color: #dfe8ee;
+			padding: 10px;
+			list-style: none;
+			min-width: 120px;
+			border-radius: 5px;
+		}
+
+		.filter .header {
+			font-weight: bold;
+			text-align: center;
+		}
+
+		.filter UL LI {
+
+		}
+
+		.filterContainer {
+
+		}
+
+		.entry .metaInfo .glyphicon {
+			display: inline-block;
+			margin-right: 5px;
+			margin-left: 5px;
+			color: #888;
+		}
+
+		.level-DEBUG {
+			background-color: #eeefff;
+		}
+
+		.level-TRACE {
+
+			background-color: #e1ffe0;
+		}
+
+		.level-WARNING {
+			background-color: #ffdfab;
+		}
+
+		.level-ERROR {
+			background-color: #ffb3ae;
+		}
+	</style>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1>Whisperer</h1>
+
+			<form id="mainForm" class="form-inline form-group-lg">
+				<div class="form-group">
+					<label class="sr-only" for="keyName">Email address</label>
+					<input type="text" size="10" class="form-control" id="keyName" placeholder="Key">
+				</div>
+				<div class="form-group">=</div>
+				<div class="form-group">
+					<input type="text" size="40" class="form-control" id="expectedValue" placeholder="Expected value">
+				</div>
+				<button id="trackButton" class="btn btn-primary btn-lg">Track!</button>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 filterContainer">
+			<table>
+				<tr>
+					<td class="filter">
+						<h4>Group</h4>
+						<ul id="groupFilter"></ul>
+					</td>
+					<td class="filter">
+						<h4>Host</h4>
+						<ul id="hostFilter"></ul>
+					</td>
+					<td class="filter">
+						<h4>Thread</h4>
+						<ul id="threadFilter"></ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<table id="list" class="table">
+				<thead>
+				<tr>
+					<th></th>
+					<th>Message</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="http://underscorejs.org/underscore.js"></script>
+
+<script id="rowTemplate" type="text/template">
+	<%
+	date = new Date(timestamp);
+	%>
+	<tr class='entry level-<%=level%>'>
+		<td class="metaInfo">
+			<div class="time">
+				<span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+				<%= date.toTimeString().substring(0, 8)%><span class="ms">.<%=date.getMilliseconds()%></span> @
+				<strong>
+					<%
+					var aHostName = abbriviateHostName(host)
+					if (aHostName) {
+					%>
+					<abbr title='<%=host%>'><%=aHostName%></abbr>
+					<% } else { %>
+					<%=host%>
+					<% } %>
+				</strong>
+			</div>
+			<div class="group">
+				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+				<%
+				var aGroup = abbriviateGroup(group)
+				if (aGroup) {
+				%>
+				<abbr title='<%=group%>'><%=aGroup%></abbr>
+				<% } else { %>
+				<%=group%>
+				<% } %>
+			</div>
+			<div class="thread">
+				<span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+				<%=thread%>
+			</div>
+		</td>
+		<td class="message"><%=message%></td>
+	</tr>
+</script>
+
+<script id="filterTemplate" type="text/template">
+	<li><a data-value="<%=value%>" href="#"><%=title%></a></li>
+</script>
+
+<script type="application/javascript">
+	function abbriviateHostName(hostName) {
+		var pattern = /[a-z0-9-_]+(\.[a-z0-9-_]+)+/i;
+		return pattern.test(hostName)
+			? /^[^.]+/.exec(hostName)
+			: null;
+	}
+
+	function abbriviateGroup(group) {
+		var abbr = group.replace(/([a-z])[a-z0-9-_]+\./ig, "$1.");
+		return abbr != group ? abbr : null;
+	}
+
+	var ListController = function ($container) {
+		var self = this;
+
+		self.$container = $container;
+
+		self.template = _.template($("#rowTemplate").html());
+		self.groupFilter = "";
+		self.threadFilter = "";
+		self.hostFilter = "";
+		self.items = [];
+
+		self.isMatching = function (i) {
+			if (self.groupFilter && self.groupFilter != i.group)
+				return false;
+			if (self.threadFilter && self.threadFilter != i.thread)
+				return false;
+			if (self.hostFilter && self.hostFilter != i.host)
+				return false;
+
+			return true;
+		};
+
+		self.add = function (item) {
+			if (self.isMatching(item))
+				self.$container.append(self.template(item));
+			self.items.push(item);
+			if (self.registerNewItem)
+				self.registerNewItem(item)
+		};
+
+		self.refresh = function () {
+			self.$container.html("");
+
+			_.chain(self.items)
+				.filter(self.isMatching)
+				.map(self.template)
+				.each(function (i) {
+					self.$container.append(i)
+				});
+		};
+	};
+
+	var FilterController = function ($container, onChange, positionSelector) {
+		var self = this;
+		self.$container = $container;
+		self.itemSelector = positionSelector;
+		self.positions = [];
+		self.onChange = onChange;
+		self.template = _.template($("#filterTemplate").html());
+
+		self.registerNewItem = function (item) {
+			var position = positionSelector(item);
+			if (!_.contains(self.positions, position)) {
+				self.positions.push(position);
+				self.refresh()
+			}
+		};
+
+		self.refresh = function () {
+			self.$container.html(self.template({title: "All", value: ""}));
+
+			_.each(self.positions, function (i) {
+				self.$container.append(self.template({title: i, value: i}));
+			});
+
+			self.$container.find("a").click(function (e) {
+				var value = $(e.target).attr('data-value');
+				self.onChange(value);
+			})
+		}
+	};
+
+	$(function () {
+		var listController = new ListController($("#list").find("tbody"));
+
+		var groupFilter = new FilterController($("#groupFilter"), function (newGroup) {
+			listController.groupFilter = newGroup;
+			listController.refresh()
+		}, function (i) {
+			return i.group;
+		});
+
+		var threadFilter = new FilterController($("#threadFilter"), function (newThread) {
+			listController.threadFilter = newThread;
+			listController.refresh()
+		}, function (i) {
+			return i.thread;
+		});
+
+		var hostFilter = new FilterController($("#hostFilter"), function (newHost) {
+			listController.hostFilter = newHost;
+			listController.refresh()
+		}, function (i) {
+			return i.host;
+		});
+
+
+		listController.registerNewItem = function (i) {
+			groupFilter.registerNewItem(i);
+			threadFilter.registerNewItem(i);
+			hostFilter.registerNewItem(i);
+		};
+
+		function testDataProvider(sink) {
+			var data = [
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Bound request context to thread: (GET /rest/v1.3/search?zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch)@1058669341 org.eclipse.jetty.server.Request@3f1a031d", "thread": "qtp2048834776-2536", "host": "search-coord3.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord3.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "DispatcherServlet with name 'spring' processing GET request for [/rest/v1.3/search]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Testing handler map [org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping@4bd049dc] in DispatcherServlet with name 'spring'", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping", "message": "Looking up handler method for path /rest/v1.3/search", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping", "message": "Found 1 matching mapping(s) for [/rest/v1.3/search] : [{[/rest/v1.3/search],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping", "message": "Returning handler method [public org.springframework.http.HttpEntity<com.farpost.search.HttpResult> com.farpost.search.web.RestControllerV13.searchDocuments(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.Map<java.lang.String, java.lang.String>)]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.beans.factory.support.DefaultListableBeanFactory", "message": "Returning cached instance of singleton bean 'com.farpost.search.web.RestControllerV13#0'", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Testing handler adapter [org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter@2856587c]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Last-Modified value for [/rest/v1.3/search] is: -1", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.HandlerMethod", "message": "Invoking [RestControllerV13.searchDocuments] method with arguments [default, , cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis'), city, 1, 50, freeOrderKey:desc, null, my, StagedSearch, {commandName=StagedSearch, select=city, clientId=my, zone=default, query=cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis'), orderBy=freeOrderKey:desc}]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.farpost.search.CoordinatorSearchEngine", "message": "Delegating execution to command {}, query: '{}', sort: {}, facets: {}, filter: '{}'", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.farpost.search.index.EngineContext", "message": "Search issued (facets: {}, sort: {}, q: {}). Results found: {}", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.farpost.search.command.SearchQuery", "message": "Block '{}' find {} documents (first {} returned). {} of them already in feed", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.farpost.search.CoordinatorSearchEngine", "message": "Command executed (matches: {}, overall count: {}, facets: {})", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "Using cached Channel {}\n for uri {}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.ning.http.client.providers.netty.NettyAsyncHttpProvider", "message": "\nUsing cached Channel {}\n for request \n{}\n", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "com.farpost.search.CoordinatorSearchEngine", "message": "Post-processing finished. {} results found, {} documents returned", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.integration.channel.QueueChannel", "message": "postSend (sent=true) on channel 'QStreamChannel', message: GenericMessage [payload=QStreamEvent{filter=[], query=[cityId = 1, delivery = 1, directoryId = 14, stat.searchDir = 14.0, text CONTAINS ('фара dualis')], zone=default, facets=[], requestId=null, date=Thu Apr 23 12:32:23 VLAT 2015, documentsFound=419, elapsedTime=72.139, pager=Pager{pageNumber=1, itemsPerPage=50}, sort=Sort{attributeName='freeOrderKey', order=DESC}, clientId='my', processedBy='[]', requestParameters='{}'}, headers={id=c4875829-0607-a11f-d2ed-ce750d3fc737, timestamp=1429756343935}]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.HandlerMethod", "message": "Method [searchDocuments] returned [<200 OK,com.farpost.search.HttpResult@69d4cdf,{Vary=[Accept], Last-Modified=[Thu, 23 Apr 2015 02:32:14 GMT]}>]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite", "message": "Testing if return value handler [org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler@5ab5a7b5] supports [org.springframework.http.HttpEntity<com.farpost.search.HttpResult>]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite", "message": "Testing if return value handler [org.springframework.web.method.annotation.ModelMethodProcessor@5e682fc7] supports [org.springframework.http.HttpEntity<com.farpost.search.HttpResult>]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite", "message": "Testing if return value handler [org.springframework.web.servlet.mvc.method.annotation.ViewMethodReturnValueHandler@22773805] supports [org.springframework.http.HttpEntity<com.farpost.search.HttpResult>]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite", "message": "Testing if return value handler [org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor@628ecace] supports [org.springframework.http.HttpEntity<com.farpost.search.HttpResult>]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdviceChain", "message": "Invoking ResponseBodyAdvice chain for body=com.farpost.search.HttpResult@69d4cdf", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdviceChain", "message": "After ResponseBodyAdvice chain body=com.farpost.search.HttpResult@69d4cdf", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor", "message": "Written [com.farpost.search.HttpResult@69d4cdf] as \"application/json;charset=UTF-8\" using [org.springframework.http.converter.json.MappingJackson2HttpMessageConverter@253ac920]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Null ModelAndView returned to DispatcherServlet with name 'spring': assuming HandlerAdapter completed request handling", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Cleared thread-bound request context: (GET /rest/v1.3/search?zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch)@1058669341 org.eclipse.jetty.server.Request@3f1a031d", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.servlet.DispatcherServlet", "message": "Successfully completed request", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "DEBUG", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.context.support.XmlWebApplicationContext", "message": "Publishing event in WebApplicationContext for namespace 'spring-servlet': ServletRequestHandledEvent: url=[/rest/v1.3/search]; client=[192.168.32.150]; method=[GET]; servlet=[spring]; session=[null]; user=[null]; time=[139ms]; status=[OK]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+				{"timestamp": 1429969186575, "group": "org.springframework.web.context.support.XmlWebApplicationContext", "message": "Publishing event in Root WebApplicationContext: ServletRequestHandledEvent: url=[/rest/v1.3/search]; client=[192.168.32.150]; method=[GET]; servlet=[spring]; session=[null]; user=[null]; time=[139ms]; status=[OK]", "thread": "qtp2048834776-2536", "host": "search-coord2.akod.loc", "level": "TRACE", "mdc": {"req.requestURI": "/rest/v1.3/search", "req.xForwardedFor": null, "clientId": "my", "req.queryString": "zone=default&query=cityId=1+and+delivery=1+and+directoryId=14+and+stat.searchDir=14.0+and+text+contains('фара+dualis')&select=city&orderBy=freeOrderKey:desc&clientId=my&commandName=StagedSearch", "query": "cityId=1 and delivery=1 and directoryId=14 and stat.searchDir=14.0 and text contains('фара dualis')", "host": "search-coord2.akod.loc", "req.remoteHost": "192.168.32.150", "req.requestURL": "http://search-coord2:8080/rest/v1.3/search", "req.userAgent": "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.16.2.3 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2"}},
+			];
+			_.each(data, sink);
+		}
+
+		function productionStreamProvider(sink, key, value) {
+			var source = new EventSource("/stream?k=" + encodeURIComponent(key) +
+				"&v=" + encodeURIComponent(value));
+
+			source.addEventListener("log", function (e) {
+				sink(JSON.parse(e.data));
+			});
+		}
+
+		$("#trackButton").click(function () {
+			var keyName = $("#keyName").val();
+			var expectedValue = $("#expectedValue").val();
+
+			var sink = listController.add;
+			//testDataProvider(sink);
+			productionStreamProvider(sink, keyName, expectedValue);
+			return false;
+		});
+	});
+</script>
+</body>
+</html>
