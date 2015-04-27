@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>me.bazhenov.whisperer</groupId>
@@ -12,8 +13,8 @@
 	<modules>
 		<module>whisperer-sample-application</module>
 		<module>whisperer-activation</module>
-    <module>whisperer-web</module>
-  </modules>
+		<module>whisperer-web</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,6 +69,24 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>farpost</id>
+			<distributionManagement>
+				<repository>
+					<id>farpost-releases</id>
+					<name>FarPost releases repository</name>
+					<url>http://maven.dev/releases</url>
+				</repository>
+				<snapshotRepository>
+					<id>farpost-snapshots</id>
+					<name>FarPost shapshots repository</name>
+					<url>http://maven.dev/snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>

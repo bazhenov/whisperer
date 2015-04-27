@@ -1,10 +1,15 @@
 package me.bazhenov.whisperer.web;
 
+import me.bazhenov.groovysh.spring.GroovyShellServiceBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.web.GzipFilterAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,9 +20,9 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 @Configuration
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = {GzipFilterAutoConfiguration.class})
 @EnableConfigurationProperties(Whisperer.Config.class)
-public class Whisperer {
+public class Whisperer extends SpringBootServletInitializer {
 
 	@Autowired
 	private Config config;
@@ -26,9 +31,23 @@ public class Whisperer {
 		SpringApplication.run(Whisperer.class, args);
 	}
 
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(Whisperer.class);
+	}
+
 	@Bean
 	public WhispererController controller() {
 		return new WhispererController(config.endpoints);
+	}
+
+	@Bean
+	public GroovyShellServiceBean groovyShell() {
+		GroovyShellServiceBean groovyShell = new GroovyShellServiceBean();
+		groovyShell.setPort(6789);
+		groovyShell.setLaunchAtStart(true);
+		groovyShell.setPublishContextBeans(true);
+		return groovyShell;
 	}
 
 	@PostConstruct
