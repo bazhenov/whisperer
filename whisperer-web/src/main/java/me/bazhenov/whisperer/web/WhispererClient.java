@@ -23,12 +23,14 @@ public final class WhispererClient {
 		this.servers = requireNonNull(servers);
 	}
 
-	public void start(Consumer<LogEvent> consumer, String key, String expectedValue) {
+	public void start(Consumer<LogEvent> consumer, String key, String expectedValue) throws InterruptedException {
 		for (URL server : servers) {
 			Thread thread = new Thread(backgroundJob(consumer, server, key, expectedValue));
 			threads.add(thread);
 			thread.start();
 		}
+		for (Thread thread : threads)
+			thread.join();
 	}
 
 	public Runnable backgroundJob(Consumer<LogEvent> consumer, URL server, String key, String expectedValue) {
@@ -43,7 +45,7 @@ public final class WhispererClient {
 				}
 
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new UncheckedIOException(e);
 			}
 		};
 	}

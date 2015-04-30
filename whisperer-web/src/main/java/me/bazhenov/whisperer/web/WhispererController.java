@@ -6,16 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.zip.GZIPOutputStream;
 
 import static com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET;
 import static com.fasterxml.jackson.databind.SerializationFeature.FLUSH_AFTER_WRITE_VALUE;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
+import static com.google.common.io.Closeables.close;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Controller
@@ -34,31 +36,33 @@ public class WhispererController {
 
 	@RequestMapping("/")
 	public String hello() {
-		return "index";
+		return "redirect:/index.html";
 	}
 
 	@RequestMapping(value = "/stream", produces = "text/event-stream")
 	public void doHandle(@RequestParam("k") String key, @RequestParam("v") String expectedValue,
-											 HttpServletResponse response)
-		throws InterruptedException, IOException {
-		ServletOutputStream out = response.getOutputStream();
+											 HttpServletResponse response) throws InterruptedException, IOException {
 		response.setHeader("Content-Type", "text/event-stream");
+		response.setHeader("Content-Encoding", "gzip");
+		GZIPOutputStream gzip = new GZIPOutputStream(response.getOutputStream(), 512, true);
 		WhispererClient client = new WhispererClient(endpoints);
 		Consumer<LogEvent> writeToOutputStream = event -> {
 			try {
 				synchronized (client) {
-					out.write("event: log\ndata: ".getBytes(UTF_8));
-					json.writeValue(out, event);
-					out.write(NL);
-					out.flush();
+					gzip.write("event: log\ndata: ".getBytes(UTF_8));
+					json.writeValue(gzip, event);
+					gzip.write(NL);
+					gzip.flush();
 				}
 			} catch (IOException e) {
-				// TODO cleanup
-				throw new RuntimeException(e);
+				try {
+					close(gzip, true);
+				} catch (IOException ignored) {
+				}
+				throw new UncheckedIOException(e);
 			}
 		};
 
 		client.start(writeToOutputStream, key, expectedValue);
-		Thread.sleep(600000);
 	}
 }
