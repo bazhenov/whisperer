@@ -11,14 +11,6 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
 	<style type="text/css">
-		#mainForm {
-			text-align: center;
-		}
-
-		#keyName {
-			text-align: right;
-		}
-
 		#list {
 			width: 100%;
 		}
@@ -52,25 +44,25 @@
 		}
 
 		.filter {
-			padding: 10px;
-			vertical-align: top;
-		}
-
-		.filter A {
-
-		}
-
-		.filter UL {
 			background-color: #dfe8ee;
-			padding: 10px;
-			list-style: none;
+			margin: 10px;
 			min-width: 120px;
 			border-radius: 5px;
 		}
 
-		.filter .header {
+		.filter UL {
+			padding: 10px;
+			list-style: none;
+		}
+
+		.filter H4 {
 			font-weight: bold;
 			text-align: center;
+			font-size: 10px;
+			color: #666;
+			margin-bottom: 0px;
+			padding-top: 10px;
+			text-transform: uppercase;
 		}
 
 		.filter UL LI {
@@ -82,8 +74,8 @@
 			color: #4875a5;
 		}
 
-		.filterContainer {
-
+		.filterContainer TD {
+			vertical-align: top;
 		}
 
 		.entry .metaInfo .glyphicon {
@@ -112,36 +104,65 @@
 
 		#mainForm #trackButton, #mainForm.active #stopButton {
 			display: inline;
+			margin-top: 10px;
 		}
 
 		#mainForm #stopButton, #mainForm.active #trackButton {
 			display: none;
+			margin-top: 10px;
 		}
 	</style>
 </head>
 <body>
-<div class="container-fluid">
+	<div class="container">
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-lg-6 col-lg-offset-3">
 			<h1>Whisperer</h1>
 
-			<form id="mainForm" class="form-inline form-group-lg">
-				<div class="form-group">
-					<label class="sr-only" for="keyName">Email address</label>
-					<input type="text" size="10" class="form-control" id="keyName" placeholder="Key">
+			<form id="mainForm">
+				<div class="form-horizontal">
+					<div class="form-group form-group-lg">
+						<label for="keyName" class="control-label">MDC key name</label>
+						<input type="text" size="10" class="form-control" id="keyName" placeholder="Key">
+					</div>
+					<div class="form-group form-group-lg">
+						<label for="expectedValue" class="control-label">Expected value</label>
+						<input type="text" size="40" class="form-control" id="expectedValue" placeholder="Expected value">
+					</div>
 				</div>
-				<div class="form-group">=</div>
-				<div class="form-group">
-					<input type="text" size="40" class="form-control" id="expectedValue" placeholder="Expected value">
+				<div class="form-inline">
+					<div class="form-group form-group-sm">
+						<label for="loggerPrefix">Logger prefix</label>
+						<input type="text" class="form-control" id="loggerPrefix" placeholder="Prefix">
+					</div>
+					<div class="form-group form-group-sm">
+						<label for="logLevel">Log level</label>
+						<select class="form-control" id="logLevel">
+							<option>TRACE</option>
+							<option>DEBUG</option>
+							<option>WARN</option>
+							<option>ERROR</option>
+						</select>
+					</div>
+					<div class="form-group form-group-sm">
+						<button id="clearButton" class="btn btn-danger btn-sm">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							Listen
+						</button>
+					</div>
 				</div>
-				<button id="trackButton" class="btn btn-success btn-lg">
-					<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
-					Listen
-				</button>
-				<button id="stopButton" class="btn btn-success btn-lg">
-					<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
-					Stop
-				</button>
+				<div class="form-horizontal">
+					<div class="form-group">
+						<button id="trackButton" class="btn btn-success btn-block btn-lg">
+							<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+							Listen
+						</button>
+						<button id="stopButton" class="btn btn-danger btn-block btn-lg">
+							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+							Stop
+						</button>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -149,22 +170,33 @@
 		<div class="col-lg-12 filterContainer">
 			<table>
 				<tr>
-					<td class="filter">
-						<h4>Group</h4>
-						<ul id="groupFilter"></ul>
+					<td>
+						<div class="filter">
+							<h4>
+								<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp;
+								Group
+							</h4>
+							<ul id="groupFilter"></ul>
+						</div>
 					</td>
-					<td class="filter">
-						<h4>Host</h4>
-						<ul id="hostFilter"></ul>
+					<td>
+						<div class="filter">
+							<h4>Host</h4>
+							<ul id="hostFilter"></ul>
+						</div>
 					</td>
-					<td class="filter">
-						<h4>Thread</h4>
-						<ul id="threadFilter"></ul>
+					<td>
+						<div class="filter">
+							<h4>Thread</h4>
+							<ul id="threadFilter"></ul>
+						</div>
 					</td>
 				</tr>
 			</table>
 		</div>
 	</div>
+</div>
+<div class="container-fluid">
 	<div class="row">
 		<div class="col-lg-12">
 			<table id="list" class="table">
@@ -232,119 +264,27 @@
 </script>
 
 <script type="application/javascript">
-	function abbriviateHostName(hostName) {
-		var pattern = /[a-z0-9-_]+(\.[a-z0-9-_]+)+/i;
-		return pattern.test(hostName)
-			? /^[^.]+/.exec(hostName)
-			: null;
-	}
-
-	function htmlEncode(value) {
-		//create a in-memory div, set it's inner text(which jQuery automatically encodes)
-		//then grab the encoded contents back out.  The div never exists on the page.
-		return $('<div/>').text(value).html();
-	}
-
-	function abbriviateGroup(group) {
-		var abbr = group.replace(/([a-z])[a-z0-9-_]+\./ig, "$1.");
-		return abbr != group ? abbr : null;
-	}
-
-	var ListController = function ($container) {
-		var self = this;
-
-		self.$container = $container;
-
-		self.template = _.template($("#rowTemplate").html());
-		self.groupFilter = "";
-		self.threadFilter = "";
-		self.hostFilter = "";
-		self.items = [];
-
-		self.isMatching = function (i) {
-			if (self.groupFilter && self.groupFilter != i.group)
-				return false;
-			if (self.threadFilter && self.threadFilter != i.thread)
-				return false;
-			if (self.hostFilter && self.hostFilter != i.host)
-				return false;
-
-			return true;
-		};
-
-		self.add = function (item) {
-			if (self.isMatching(item))
-				self.$container.append(self.template(item));
-			self.items.push(item);
-			if (self.registerNewItem)
-				self.registerNewItem(item)
-		};
-
-		self.refresh = function () {
-			self.$container.html("");
-
-			_.chain(self.items)
-				.filter(self.isMatching)
-				.map(self.template)
-				.each(function (i) {
-					self.$container.append(i)
-				});
-		};
-	};
-
-	var FilterController = function ($container, onChange, positionSelector) {
-		var self = this;
-		self.$container = $container;
-		self.itemSelector = positionSelector;
-		self.positions = [];
-		self.onChange = onChange;
-		self.template = _.template($("#filterTemplate").html());
-
-		self.registerNewItem = function (item) {
-			var position = positionSelector(item);
-			if (!_.contains(self.positions, position)) {
-				self.positions.push(position);
-				self.refresh()
-			}
-		};
-
-		self.refresh = function () {
-			self.$container.html(self.template({title: "All", value: ""}));
-
-			_.each(self.positions, function (i) {
-				self.$container.append(self.template({title: i, value: i}));
-			});
-
-			self.$container.find("a").click(function (e) {
-				var value = $(e.target).attr('data-value');
-				self.$container.find("a").removeClass("active");
-				$(e.target).addClass("active");
-				self.onChange(value);
-				return false;
-			})
-		}
-	};
-
 	$(function () {
 		var listController = new ListController($("#list").find("tbody"));
 
 		var groupFilter = new FilterController($("#groupFilter"), function (newGroup) {
 			listController.groupFilter = newGroup;
-			listController.refresh()
+			listController.refresh();
 		}, function (i) {
 			return i.group;
 		});
+		groupFilter.titlePreprocessor = abbriviateGroup;
 
 		var threadFilter = new FilterController($("#threadFilter"), function (newThread) {
 			listController.threadFilter = newThread;
-			listController.refresh()
+			listController.refresh();
 		}, function (i) {
 			return i.thread;
 		});
 
 		var hostFilter = new FilterController($("#hostFilter"), function (newHost) {
 			listController.hostFilter = newHost;
-			listController.refresh()
+			listController.refresh();
 		}, function (i) {
 			return i.host;
 		});
@@ -367,7 +307,7 @@
 			});
 		}
 
-		//testDataProvider(listController.add);
+		testDataProvider(listController.add);
 
 		var eventSource;
 
@@ -376,6 +316,8 @@
 
 			$("#keyName").prop('disabled', false);
 			$("#expectedValue").prop('disabled', false);
+			$("#logLevel").prop('disabled', false);
+			$("#loggerPrefix").prop('disabled', false);
 
 			eventSource.close();
 			return false;
@@ -388,14 +330,23 @@
 
 			$("#keyName").prop('disabled', true);
 			$("#expectedValue").prop('disabled', true);
+			$("#logLevel").prop('disabled', true);
+			$("#loggerPrefix").prop('disabled', true);
+			
 
 			eventSource = new EventSource("/stream?k=" + encodeURIComponent(keyName) +
 				"&v=" + encodeURIComponent(expectedValue));
 			eventSource.addEventListener("log", function (e) {
 				listController.add(JSON.parse(e.data));
+			return false;
 			});
+
 			return false;
 		});
+		$("#clearButton").click(function() {
+			listController.clear();
+			return false;
+		})
 	});
 </script>
 </body>
