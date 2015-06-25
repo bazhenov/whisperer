@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.UnknownHostException;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 @EnableAutoConfiguration
@@ -36,7 +38,7 @@ public class WhispererServer {
 	}
 
 	@Bean
-	public ServletRegistrationBean registerServlets() {
+	public ServletRegistrationBean registerServlets() throws UnknownHostException {
 		return new ServletRegistrationBean(new WhispererServlet(), "/whisperer");
 	}
 }

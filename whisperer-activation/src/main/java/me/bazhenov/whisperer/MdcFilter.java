@@ -12,15 +12,19 @@ public class MdcFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
 	private final String key;
 	private final String expectedValue;
+	private final ActivatingTurboFilter turboFilter;
 
-	public MdcFilter(String key, String expectedValue) {
+	public MdcFilter(String key, String expectedValue, ActivatingTurboFilter turboFilter) {
+		this.turboFilter = requireNonNull(turboFilter);
 		this.key = requireNonNull(key);
 		this.expectedValue = requireNonNull(expectedValue);
 	}
 
 	@Override
 	public FilterReply decide(ILoggingEvent event) {
-		return event.getMDCPropertyMap().getOrDefault(key, "").equals(expectedValue)
+		if (!event.getMDCPropertyMap().getOrDefault(key, "").equals(expectedValue))
+			return DENY;
+		return turboFilter.isLevelAndLoggerValid(event.getLevel(), event.getLoggerName())
 			? ACCEPT
 			: DENY;
 	}
