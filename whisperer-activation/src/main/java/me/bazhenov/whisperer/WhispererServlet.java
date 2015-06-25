@@ -14,8 +14,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Stream;
 
 import static ch.qos.logback.classic.Level.TRACE;
 import static com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET;
@@ -23,6 +26,7 @@ import static com.fasterxml.jackson.databind.SerializationFeature.FLUSH_AFTER_WR
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.lang.Thread.currentThread;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -87,10 +91,19 @@ public class WhispererServlet extends HttpServlet {
 	}
 
 	public void send(ILoggingEvent event, OutputStream outputStream) throws IOException {
-		LogEvent e = new LogEvent(event.getTimeStamp(), event.getLoggerName(), event.getFormattedMessage(),
-			event.getThreadName(), hostName, event.getLevel().toString(), event.getMDCPropertyMap());
+		LogEvent e = new LogEvent(event.getTimeStamp(), event.getLoggerName(), event.getMessage(),
+			toStringList(event.getArgumentArray()), event.getThreadName(), hostName, event.getLevel().toString(),
+			event.getMDCPropertyMap());
 		json.writeValue(outputStream, e);
 		outputStream.write(nl);
+	}
+
+	private static List<String> toStringList(Object[] array) {
+		if (array == null || array.length == 0)
+			return Collections.emptyList();
+		return Stream.of(array)
+			.map(i -> i == null ? null : i.toString())
+			.collect(toList());
 	}
 
 	private static void disableCache(HttpServletResponse resp) {

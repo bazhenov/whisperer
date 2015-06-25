@@ -3,6 +3,7 @@ package me.bazhenov.whisperer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 
 public final class LogEvent {
@@ -10,6 +11,7 @@ public final class LogEvent {
 	private final long timeStamp;
 	private final String group;
 	private final String message;
+	private final List<String> arguments;
 	private final String thread;
 	private final String host;
 	private final String level;
@@ -17,11 +19,12 @@ public final class LogEvent {
 
 	@JsonCreator
 	public LogEvent(@JsonProperty("timestamp") long timeStamp, @JsonProperty("group") String group, @JsonProperty("message") String message,
-									@JsonProperty("thread") String thread, @JsonProperty("host") String host,
+									@JsonProperty("args") List<String> arguments, @JsonProperty("thread") String thread, @JsonProperty("host") String host,
 									@JsonProperty("level") String level, @JsonProperty("mdc") Map<String, String> mdc) {
 		this.timeStamp = timeStamp;
 		this.group = group;
 		this.message = message;
+		this.arguments = arguments;
 		this.thread = thread;
 		this.host = host;
 		this.level = level;
@@ -56,6 +59,11 @@ public final class LogEvent {
 	@JsonProperty("level")
 	public String getLevel() {
 		return level;
+	}
+
+	@JsonProperty("args")
+	public List<String> getArguments() {
+		return arguments;
 	}
 
 	@JsonProperty("mdc")

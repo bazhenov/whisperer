@@ -32,9 +32,13 @@ public class WhispererServer {
 	@ResponseBody
 	public String hello(@RequestParam(defaultValue = "") String user) {
 		MDC.put("user", user);
-		log.trace("Fucking shit happened");
+		log.trace("Trace log event with {}, {}", "two", "variables", null, new Exception("Ooops"));
+		log.debug("Debug log event");
+		log.info("Info log event");
+		log.warn("Warn log event");
+		log.error("Error log event");
 		MDC.remove("user");
-		return "Hello";
+		return "";
 	}
 
 	@Bean
