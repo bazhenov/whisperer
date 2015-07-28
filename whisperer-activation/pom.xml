@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>whisperer-activation</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<name>Whisperer Activation Library</name>
 
 	<dependencies>

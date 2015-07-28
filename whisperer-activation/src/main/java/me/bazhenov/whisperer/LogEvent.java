@@ -18,8 +18,9 @@ public final class LogEvent {
 	private final Map<String, String> mdc;
 
 	@JsonCreator
-	public LogEvent(@JsonProperty("timestamp") long timeStamp, @JsonProperty("group") String group, @JsonProperty("message") String message,
-									@JsonProperty("args") List<String> arguments, @JsonProperty("thread") String thread, @JsonProperty("host") String host,
+	public LogEvent(@JsonProperty("timestamp") long timeStamp, @JsonProperty("group") String group,
+									@JsonProperty("message") String message, @JsonProperty("args") List<String> arguments,
+									@JsonProperty("thread") String thread, @JsonProperty("host") String host,
 									@JsonProperty("level") String level, @JsonProperty("mdc") Map<String, String> mdc) {
 		this.timeStamp = timeStamp;
 		this.group = group;
