@@ -32,6 +32,10 @@
 	  c.add({});
 	  assert.equal($container.find("li").length, 1);
 	});
+
+	QUnit.test("expandTemplate()", function(assert) {
+		assert.equal(expandTemplate("Message {}, {}", ['one', 1]), "Message one, 1");
+	});
   </script>
 </body>
 </html>

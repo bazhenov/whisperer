@@ -11,6 +11,13 @@ function htmlEncode(value) {
 	return $('<div/>').text(value).html();
 }
 
+function expandTemplate(template, args) {
+	for (var i=0; i<args.length; i++) {
+		template = template.replace('{}', args[i]);
+	}
+	return template;
+}
+
 function abbriviateGroup(group) {
 	var abbr = group.replace(/([a-z])[a-z0-9-_]+\./ig, "$1.");
 	return abbr != group ? abbr : null;

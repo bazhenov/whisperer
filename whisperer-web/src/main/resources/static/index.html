@@ -256,7 +256,7 @@
 				<%=thread%>
 			</div>
 		</td>
-		<td class="message"><%=htmlEncode(message)%></td>
+		<td class="message"><%=htmlEncode(expandTemplate(message, args))%></td>
 	</tr>
 </script>
 
