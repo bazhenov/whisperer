@@ -20,6 +20,25 @@ public class ActivatingTurboFilter extends TurboFilter {
 	private final String key;
 	private final String expectedValue;
 
+	/**
+	 * Этот блок кода необходим для исключения проблем с classloader'ом при использовании Logback в качестве
+	 * системы логгирования для Jetty.
+	 *
+	 * В кратце проблема в том, что при вызове метода {@link #decide(Marker, Logger, Level, String, Object[], Throwable)}
+	 * происходит загрузка классов:
+	 * <ol>
+	 * <li>{@link MDC}</li>;
+	 * <li>{@link FilterReply}</li>.
+	 * </ol>
+	 * Так как classloader Jetty делегирует управление Logback, образуется рекурсия.
+	 *
+	 * Чтобы разорвать эту рекурсию мы делаем предзагрузку этих классов в статическом инициализаторе класса.
+	 */
+	static {
+		MDC.get("foo");
+		NEUTRAL.name();
+	}
+
 	public ActivatingTurboFilter(String key, String expectedValue, Optional<Level> level, Optional<String> loggerPrefix) {
 		this.loggerPrefix = requireNonNull(loggerPrefix);
 		this.level = requireNonNull(level);
