@@ -76,7 +76,7 @@ var ListController = function ($container, template) {
 	self.clear = function() {
 		self.items = [];
 		self.refresh();
-	}
+	};
 
 	self.add = function (item) {
 		if (self.isMatching(item))
