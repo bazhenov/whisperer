@@ -41,7 +41,8 @@ public final class WhispererClient {
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 					String line;
 					while ((line = reader.readLine()) != null)
-						consumer.accept(json.readValue(line, LogEvent.class));
+						if (!line.isEmpty())
+							consumer.accept(json.readValue(line, LogEvent.class));
 				}
 
 			} catch (IOException e) {
