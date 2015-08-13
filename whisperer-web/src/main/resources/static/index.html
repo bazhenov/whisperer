@@ -140,6 +140,7 @@
 						<select class="form-control" id="logLevel">
 							<option>TRACE</option>
 							<option>DEBUG</option>
+							<option>INFO</option>
 							<option>WARN</option>
 							<option>ERROR</option>
 						</select>
@@ -330,6 +331,8 @@
 			$("#mainForm").addClass("active");
 			var keyName = $("#keyName").val();
 			var expectedValue = $("#expectedValue").val();
+			var level = $("#logLevel").val();
+			var prefix = $("#loggerPrefix").val();
 
 			$("#keyName").prop('disabled', true);
 			$("#expectedValue").prop('disabled', true);
@@ -338,7 +341,9 @@
 
 
 			eventSource = new EventSource("/stream?k=" + encodeURIComponent(keyName) +
-				"&v=" + encodeURIComponent(expectedValue));
+				"&v=" + encodeURIComponent(expectedValue) +
+				"&level=" + encodeURIComponent(level) +
+				"&prefix=" + encodeURIComponent(prefix));
 			eventSource.addEventListener("log", function (e) {
 				listController.add(JSON.parse(e.data));
 				return false;
