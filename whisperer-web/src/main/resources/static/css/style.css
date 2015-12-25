@@ -1,0 +1,229 @@
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Material Icons'), local('MaterialIcons-Regular'),
+		url(/css/MaterialIcons-Regular.woff2) format('woff2'),
+		url(/css/MaterialIcons-Regular.woff) format('woff'),
+		url(/css/MaterialIcons-Regular.ttf) format('truetype')
+}
+
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+}
+
+.whisperer__layout {
+	border-radius: 2px;
+	margin: 50px 0;
+}
+
+.whisperer__feed__container, .whisperer__feed__filters {
+	border-top: 1px solid rgba(0,0,0,0.1);
+	padding: 15px 30px 13px 30px;
+	display: none;
+}
+
+.whisperer__feed__container--is-active, .whisperer__feed__filters--is-active {
+	display: block;
+}
+
+.whisperer__feed__filters__container {
+	display: none;
+}
+
+.whisperer__feed__filters__container.is-active {
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.whisperer__form__container {
+	padding: 15px 30px 30px 30px;
+}
+
+.whisperer__form__stop-action {
+	opacity: 0;
+	transform: opacity .3s ease-out;
+}
+
+.whisper__form__spinner {
+	margin-left: 10px;
+	vertical-align: middle;
+	opacity: 0;
+	-webkit-transform: opacity .3s ease-out;
+}
+
+.whisperer__form--state-busy .whisper__form__spinner {
+	opacity: 1;
+}
+
+.whisperer__form--state-busy .whisperer__form__stop-action {
+	opacity: 1;
+}
+
+.whisperer__form__radio-group .whisperer__form__field {
+	visibility: hidden;
+}
+
+.whisperer__form__radio-group .mdl-button {
+	position: relative;
+}
+
+.whisperer__form__radio-group .mdl-button--raised {
+	box-shadow: none;
+}
+
+.whisperer__feed {
+	padding: 0;
+	border: none;
+	white-space: normal;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.whisperer__feed .mdl-tooltip {
+	max-width: none;
+}
+
+.whisperer__feed__record.host-hide, .whisperer__feed__record.threadName-hide, .whisperer__feed__record.packageName-hide {
+	display: none;
+}
+
+.whisperer__feed__record__package {
+	padding-bottom: 12px!important;
+}
+
+.whisperer__feed__record__package-name {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.whisperer__feed__record__message {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	padding: 10px;
+	min-height: 88px;
+	word-break: break-all;
+	overflow: hidden;
+	background: #fff;
+	cursor: pointer;
+}
+
+.whisperer__feed__record__message:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	box-shadow: 0 0 8px 8px #fff;
+}
+
+.whisperer__feed__record__message.pre-expanded {
+	z-index: 1;
+	bottom: auto;
+	transition: transform .15s ease-out;
+	will-change: transform;
+}
+
+.whisperer__feed__record__message.expanded {
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.36);
+	transform: scale(1.3);
+}
+
+.whisperer__feed__record__message.expanded:after {
+	content: none;
+}
+
+.whisperer__feed__filters ul {
+	list-style: none;
+	padding: 0 2px;
+	height: 230px;
+	overflow: auto;
+}
+
+.whisperer__feed__filter__option {
+	position: relative;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.whisperer__feed__filter__option:after {
+	/*content: attr(data-count);*/
+	position: absolute;
+	right: 2px;
+	background: #37474F;
+	padding: 0 8px;
+	border-radius: 100px;
+	color: #fff;
+}
+
+.whisperer__feed__filter__option .mdl-radio {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: 100%;
+}
+
+.whisperer__feed__filter__option .mdl-radio.is-checked .mdl-radio__label {
+	color: #303F9F!important;
+	font-weight: bold;
+}
+
+.whisperer__feed__filter__search {
+	left: -5px;
+	margin-top: -23px;
+	margin-bottom: -23px;
+	width: 100%;
+}
+
+.whisperer__feed__filter__bag__item {
+	position: relative;
+	padding: 2px 30px 2px 10px;
+	background: rgba(55, 71, 79, 0.71);
+	display: inline-block;
+	border-radius: 15px;
+	color: #fff;
+	line-height: 22px;
+}
+
+.whisperer__feed__filter__bag__item .close {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	cursor: pointer;
+}
+
+.whisperer__feed__filter__bag__item .close:hover i {
+	color: #f5f5f5 !important;
+}
+
+.whisperer__feed__filter-sync-progress {
+	visibility: hidden;
+	width: 100%;
+}
+
+.whisperer__feed__total {
+	font-weight: bold;
+}
+
+.whisperer__feed__clear {
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
