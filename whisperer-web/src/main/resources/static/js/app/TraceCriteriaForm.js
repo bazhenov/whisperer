@@ -28,6 +28,8 @@ define(
 
 			FIELD_NAMES: ['keyName', 'expectedValue', 'severity', 'prefix'],
 
+			REQUIRED_FIELD_NAMES: ['keyName', 'expectedValue'],
+
 			STORAGE_KEY_PREFIX: 'whisperer.form.',
 
 			CSS_CLASSES: {
@@ -121,7 +123,7 @@ define(
 			validate_: function () {
 				var valid = true;
 
-				this.FIELD_NAMES.forEach(function (fieldName) {
+				this.REQUIRED_FIELD_NAMES.forEach(function (fieldName) {
 					if (this.field[fieldName].value.length < 2) {
 						this.field[fieldName].parentNode.classList.add('is-invalid');
 						valid = false;
