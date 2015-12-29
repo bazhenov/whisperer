@@ -75,6 +75,10 @@ define(
 			},
 
 			collapseMessageContent_: function (messageEl) {
+				if (!messageEl.classList.contains(this.CSS_CLASSES.EXPANDED)) {
+					return;
+				}
+
 				messageEl.classList.remove(this.CSS_CLASSES.EXPANDED);
 
 				setTimeout((function () {

@@ -48,6 +48,10 @@ define(
 				this.el.classList.add(this.CSS_CLASSES.STATE_IS_ACTIVE);
 			},
 
+			hide: function () {
+				this.el.classList.remove(this.CSS_CLASSES.STATE_IS_ACTIVE);
+			},
+
 			clear: function () {
 				this.filters.forEach(function (filter) {
 					filter.getView().parentNode.removeChild(filter.getView());

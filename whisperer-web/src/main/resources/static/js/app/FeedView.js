@@ -7,9 +7,9 @@
  */
 
 define(
-	['underscore', 'backbone', 'FilterCollection', 'RecordFormatter', 'RecordMessageClickBehavior'],
+	['underscore', 'backbone','FilterCollection', 'RecordFormatter', 'RecordMessageClickBehavior', 'JustInTimeFeedManager'],
 
-	function (_, Backbone, FilterCollection, RecordFormatter, RecordMessageClickBehavior) {
+	function (_, Backbone, FilterCollection, RecordFormatter, RecordMessageClickBehavior, JustInTimeFeedManager) {
 
 		var Templates = {
 			Record: _.template(
@@ -37,6 +37,7 @@ define(
 			this.recordFormatter = new RecordFormatter;
 			this.recordMessageClickBehavior = new RecordMessageClickBehavior(this.el, this.CSS_CLASSES.MESSAGE);
 			this.filterCollection = new FilterCollection(this.META_FOR_FILTERS);
+			this.feedManager = new JustInTimeFeedManager(document.querySelector('.mdl-layout__content'), this.el.querySelector('tbody'));
 
 			this.init();
 		}
@@ -78,11 +79,12 @@ define(
 				formattedRecord = this.formatRecord_(record);
 				tr = this.createRecord_(formattedRecord);
 
-				this.el.querySelector('tbody').appendChild(tr);
 				this.el.classList.add(this.CSS_CLASSES.STATE_IS_ACTIVE);
 				this.filterCollection.show();
 
+				this.feedManager.appendRecord(tr);
 				this.filterCollection.sync(formattedRecord);
+
 				this.updateTotal_();
 			},
 
@@ -101,23 +103,12 @@ define(
 			},
 
 			syncFeedWithFilters_: function (propertyName, propertyValue) {
-				var display;
-
-				document.querySelector('.whisperer__feed__filter-sync-progress').style.visibility = 'visible';
-
-				Array.prototype.slice.apply(this.el.querySelectorAll('tbody tr')).forEach(function (rowEl) {
-					display = propertyValue == 'All' || rowEl.getAttribute('data-' + propertyName) == propertyValue;
-
-					if (display) {
-						rowEl.classList.remove(propertyName + '-hide');
-					}
-					else {
-						rowEl.classList.add(propertyName + '-hide');
-					}
-				}, this);
+				document.querySelector('.whisperer__feed__filter-sync-progress').style.display = 'block';
+				this.feedManager.filter(propertyName, propertyValue);
+				this.updateTotal_();
 
 				setTimeout(function () {
-					document.querySelector('.whisperer__feed__filter-sync-progress').style.visibility = '';
+					document.querySelector('.whisperer__feed__filter-sync-progress').style.display = '';
 				}, 200);
 			},
 
@@ -136,21 +127,32 @@ define(
 			},
 
 			clear_: function () {
+				this.el.classList.remove(this.CSS_CLASSES.STATE_IS_ACTIVE);
+				this.filterCollection.hide();
 				this.removeRecords_();
-				this.filterCollection.clearOptions();
 				this.updateTotal_();
+				this.filterCollection.clearOptions();
 			},
 
 			removeRecords_: function () {
-				this.el.querySelector('tbody').innerHTML = '';
+				this.feedManager.clear();
 			},
 
 			updateTotal_: function () {
-				var total;
+				var caption;
 
-				total = this.el.querySelectorAll('tr').length - 1;
+				if (this.feedManager.getCount() == 0) {
+					caption = 'No';
+				}
+				else {
+					caption = this.feedManager.getCount();
 
-				this.el.querySelector('.' + this.CSS_CLASSES.TOTAL).innerHTML = total ? total : 'No';
+					if (this.feedManager.getFilteredCount() != this.feedManager.getCount()) {
+						caption += ' (' + this.feedManager.getFilteredCount() + ')';
+					}
+				}
+
+				this.el.querySelector('.' + this.CSS_CLASSES.TOTAL).innerHTML = caption;
 			}
 		});
 
