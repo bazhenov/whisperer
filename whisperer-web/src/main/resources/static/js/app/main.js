@@ -17,7 +17,8 @@ requirejs.config({
 		'TraceCriteriaForm': '/js/app/TraceCriteriaForm',
 		'RecordFormatter': '/js/app/RecordFormatter',
 		'FilterCollection': '/js/app/FilterCollection',
-		'RecordMessageClickBehavior': '/js/app/RecordMessageClickBehavior'
+		'RecordMessageClickBehavior': '/js/app/RecordMessageClickBehavior',
+		'JustInTimeFeedManager': '/js/app/JustInTimeFeedManager'
 	},
 	config: {
 		'FeedReceiver': {

@@ -4,7 +4,7 @@ header('Cache-Control: no-cache'); // recommended to prevent caching of event da
 
 $id = time();
 
-for ($i = 0; $i < 10; $i++) {
+for ($i = 0; $i < 100; $i++) {
 	$msg = file_get_contents('./test.json');
 	$msg = explode("\n", $msg);
 

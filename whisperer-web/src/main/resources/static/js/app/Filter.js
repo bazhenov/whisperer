@@ -83,7 +83,6 @@ define(
 				this.el = this.el.firstChild;
 
 				this.clearOptions();
-				this.el.querySelector('.mdl-radio').click();
 			},
 
 			sync: function (record) {
@@ -118,7 +117,10 @@ define(
 
 			clearOptions: function () {
 				this.el.querySelector('ul').innerHTML = '';
+				this.options = [];
 				this.appendOption_('All');
+				this.el.querySelector('.mdl-radio').classList.add('is-checked');
+				this.el.querySelector('.mdl-radio').click();
 			},
 
 			selectOption_: function (event) {

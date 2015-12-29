@@ -51,7 +51,7 @@ define(
 				}, this);
 
 				this.listenActionEl.addEventListener('click', this.setBusyState_.bind(this));
-				this.stopActionEl.addEventListener('click', this.setIdleState_.bind(this));
+				this.stopActionEl.addEventListener('mousedown', this.setIdleState_.bind(this));
 
 				this.el.addEventListener('click', this.radioGroupChange_.bind(this));
 
