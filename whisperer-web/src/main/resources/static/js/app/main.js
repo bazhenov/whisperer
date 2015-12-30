@@ -22,7 +22,7 @@ requirejs.config({
 	},
 	config: {
 		'FeedReceiver': {
-			FEED_URL: '/stream.php'
+			FEED_URL: '/stream'
 		}
 	}
 });
