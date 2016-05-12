@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Whisperer</title>
+
+	<!-- Bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<style type="text/css">
+		#list {
+			width: 100%;
+		}
+
+		.time {
+			font-size: 14px;
+			white-space: nowrap;
+		}
+
+		.ms {
+			font-size: 12px;
+			color: gray;
+		}
+
+		.message {
+			word-wrap: break-word;
+			word-break: break-all;
+			font-family: monospace;
+			font-size: 14px;
+
+		}
+
+		.group {
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.thread {
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.filter {
+			background-color: #dfe8ee;
+			margin: 10px;
+			min-width: 120px;
+			border-radius: 5px;
+		}
+
+		.filter UL {
+			padding: 10px;
+			list-style: none;
+		}
+
+		.filter H4 {
+			font-weight: bold;
+			text-align: center;
+			font-size: 10px;
+			color: #666;
+			margin-bottom: 0px;
+			padding-top: 10px;
+			text-transform: uppercase;
+		}
+
+		.filter UL LI {
+
+		}
+
+		.filter A.active {
+			font-weight: bold;
+			color: #4875a5;
+		}
+
+		.filterContainer TD {
+			vertical-align: top;
+		}
+
+		.entry .metaInfo .glyphicon {
+			display: inline-block;
+			margin-right: 5px;
+			margin-left: 5px;
+			color: #888;
+		}
+
+		.level-DEBUG {
+			background-color: #eeefff;
+		}
+
+		.level-TRACE {
+
+			background-color: #e1ffe0;
+		}
+
+		.level-WARNING {
+			background-color: #ffdfab;
+		}
+
+		.level-ERROR {
+			background-color: #ffb3ae;
+		}
+
+		#mainForm #trackButton, #mainForm.active #stopButton {
+			display: inline;
+			margin-top: 10px;
+		}
+
+		#mainForm #stopButton, #mainForm.active #trackButton {
+			display: none;
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-6 col-lg-offset-3">
+			<h1>Whisperer</h1>
+
+			<form id="mainForm">
+				<div class="form-horizontal">
+					<div class="form-group form-group-lg">
+						<label for="keyName" class="control-label">MDC key name</label>
+						<input type="text" size="10" class="form-control" id="keyName" placeholder="Key">
+					</div>
+					<div class="form-group form-group-lg">
+						<label for="expectedValue" class="control-label">Expected value</label>
+						<input type="text" size="40" class="form-control" id="expectedValue" placeholder="Expected value">
+					</div>
+				</div>
+				<div class="form-inline">
+					<div class="form-group form-group-sm">
+						<label for="loggerPrefix">Logger prefix</label>
+						<input type="text" class="form-control" id="loggerPrefix" placeholder="Prefix">
+					</div>
+					<div class="form-group form-group-sm">
+						<label for="logLevel">Log level</label>
+						<select class="form-control" id="logLevel">
+							<option>TRACE</option>
+							<option>DEBUG</option>
+							<option>INFO</option>
+							<option>WARN</option>
+							<option>ERROR</option>
+						</select>
+					</div>
+					<div class="form-group form-group-sm">
+						<button id="clearButton" class="btn btn-danger btn-sm">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							Clear
+						</button>
+					</div>
+				</div>
+				<div class="form-horizontal">
+					<div class="form-group">
+						<button id="trackButton" class="btn btn-success btn-block btn-lg">
+							<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+							Listen
+						</button>
+						<button id="stopButton" class="btn btn-danger btn-block btn-lg">
+							<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+							Stop
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 filterContainer">
+			<table>
+				<tr>
+					<td>
+						<div class="filter">
+							<h4>
+								<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp;
+								Group
+							</h4>
+							<ul id="groupFilter"></ul>
+						</div>
+					</td>
+					<td>
+						<div class="filter">
+							<h4>Host</h4>
+							<ul id="hostFilter"></ul>
+						</div>
+					</td>
+					<td>
+						<div class="filter">
+							<h4>Thread</h4>
+							<ul id="threadFilter"></ul>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<table id="list" class="table">
+				<thead>
+				<tr>
+					<th></th>
+					<th>Message</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="http://underscorejs.org/underscore.js"></script>
+<script src="/api.js"></script>
+
+<script id="rowTemplate" type="text/template">
+	<%
+	date = new Date(timestamp);
+	%>
+	<tr class='entry level-<%=level%>'>
+		<td class="metaInfo">
+			<div class="time">
+				<span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+				<%= date.toTimeString().substring(0, 8)%><span class="ms">.<%=date.getMilliseconds()%></span> @
+				<strong>
+					<%
+					var aHostName = abbriviateHostName(host)
+					if (aHostName) {
+					%>
+					<abbr title='<%=host%>'><%=aHostName%></abbr>
+					<% } else { %>
+					<%=host%>
+					<% } %>
+				</strong>
+			</div>
+			<div class="group">
+				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+				<%
+				var aGroup = abbriviateGroup(group)
+				if (aGroup) {
+				%>
+				<abbr title='<%=group%>'><%=aGroup%></abbr>
+				<% } else { %>
+				<%=group%>
+				<% } %>
+			</div>
+			<div class="thread">
+				<span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+				<%=thread%>
+			</div>
+		</td>
+		<td class="message"><%=htmlEncode(expandTemplate(message, args))%></td>
+	</tr>
+</script>
+
+<script id="filterTemplate" type="text/template">
+	<li><a data-value="<%=value%>" href="#"><%=title%></a></li>
+</script>
+
+<script type="application/javascript">
+	$(function () {
+
+		var listController = new ListController($("#list").find("tbody"), _.template($("#rowTemplate").html()));
+
+		var groupFilter = new FilterController($("#groupFilter"), function (newGroup) {
+			listController.groupFilter = newGroup;
+			listController.refresh();
+		}, function (i) {
+			return i.group;
+		});
+		groupFilter.titlePreprocessor = abbriviateGroup;
+
+		var threadFilter = new FilterController($("#threadFilter"), function (newThread) {
+			listController.threadFilter = newThread;
+			listController.refresh();
+		}, function (i) {
+			return i.thread;
+		});
+
+		var hostFilter = new FilterController($("#hostFilter"), function (newHost) {
+			listController.hostFilter = newHost;
+			listController.refresh();
+		}, function (i) {
+			return i.host;
+		});
+
+
+		listController.registerNewItem = function (i) {
+			groupFilter.registerNewItem(i);
+			threadFilter.registerNewItem(i);
+			hostFilter.registerNewItem(i);
+		};
+
+		function testDataProvider(sink) {
+			$.ajax({
+				url: "/test.json",
+				dataType: "text"
+			}).done(function (r) {
+				_.chain(_.first(r.split("\n"), 100))
+					.map(JSON.parse)
+					.each(sink);
+			});
+		}
+
+		//testDataProvider(listController.add);
+
+		var eventSource;
+
+		$("#stopButton").click(function () {
+			$("#mainForm").removeClass("active");
+
+			$("#keyName").prop('disabled', false);
+			$("#expectedValue").prop('disabled', false);
+			$("#logLevel").prop('disabled', false);
+			$("#loggerPrefix").prop('disabled', false);
+
+			eventSource.close();
+			return false;
+		});
+
+		$("#trackButton").click(function () {
+
+			$("#mainForm").addClass("active");
+			var keyName = $("#keyName").val();
+			var expectedValue = $("#expectedValue").val();
+			var level = $("#logLevel").val();
+			var prefix = $("#loggerPrefix").val();
+
+			$("#keyName").prop('disabled', true);
+			$("#expectedValue").prop('disabled', true);
+			$("#logLevel").prop('disabled', true);
+			$("#loggerPrefix").prop('disabled', true);
+
+
+			eventSource = new EventSource("/stream?k=" + encodeURIComponent(keyName) +
+				"&v=" + encodeURIComponent(expectedValue) +
+				"&level=" + encodeURIComponent(level) +
+				"&prefix=" + encodeURIComponent(prefix));
+			eventSource.addEventListener("log", function (e) {
+				listController.add(JSON.parse(e.data));
+				return false;
+			});
+
+			return false;
+		});
+		$("#clearButton").click(function () {
+			listController.clear();
+			return false;
+		})
+	});
+</script>
+</body>
+</html>

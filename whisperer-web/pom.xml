@@ -59,8 +59,9 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>
 						WEB-INF/lib/tomcat-embed-*.jar,
-						WEB-INF/lib/slf4j-api-*.jar,
+						WEB-INF/lib/*slf4j*.jar,
 						WEB-INF/lib/javax.servlet-api-*.jar,
+						WEB-INF/lib/logback-*.jar,
 						WEB-INF/lib/spring-boot-starter-tomcat-*.jar,
 					</packagingExcludes>
 				</configuration>
