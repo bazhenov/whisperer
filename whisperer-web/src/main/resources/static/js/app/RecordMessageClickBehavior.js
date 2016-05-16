@@ -10,6 +10,11 @@ define(
 	['underscore'],
 	function (_) {
 
+		/**
+		 * @param {HTMLElement} feedEl
+		 * @param {string} messageClassName
+         * @constructor
+         */
 		function RecordMessageClickBehavior(feedEl, messageClassName) {
 			this.feedEl = feedEl;
 			this.messageClassName = messageClassName;
@@ -18,7 +23,8 @@ define(
 			this.init();
 		}
 
-		_.extend(RecordMessageClickBehavior.prototype, {
+
+		_.extend(RecordMessageClickBehavior.prototype, /** @lends RecordMessageClickBehavior.prototype */ {
 			KEYS: {
 				ESC: 27
 			},
@@ -28,52 +34,87 @@ define(
 				EXPANDED: 'expanded'
 			},
 
+			/**
+			 * @constructs
+			 */
 			init: function () {
 				this.feedEl.addEventListener('click', this.clickOnMessageEl_.bind(this), true);
 				document.addEventListener('click', this.clickOnWhatEver_.bind(this), true);
 				document.addEventListener('keyup', this.keyUpOnDocument_.bind(this));
 			},
 
+			/**
+			 * @private
+			 */
 			clickOnMessageEl_: function (event) {
-				// Don't capture events, that doesn't target to message element
-				if (!event.target.classList.contains(this.messageClassName)) {
+				var messageEl;
+
+				// Don't capture events, that doesn't target to message element or to it's children
+				if (null == (messageEl = this.getMessageElWhichContainsTarget_(event.target))) {
 					return;
 				}
 
-				if (!event.target.classList.contains(this.CSS_CLASSES.EXPANDED)) {
-					this.expandMessageContent_(event.target);
+				if (!messageEl.classList.contains(this.CSS_CLASSES.EXPANDED)) {
+					this.expandMessageContent_(messageEl);
 				}
 				else {
-					this.collapseMessageContent_(event.target);
+					this.collapseMessageContent_(messageEl);
 				}
 
 				event.stopPropagation();
 			},
 
+			/**
+			 * @private
+             */
+			getMessageElWhichContainsTarget_: function (target) {
+				while (target != document) {
+					if (target.classList.contains(this.messageClassName)) {
+						return target;
+					}
+
+					target = target.parentNode;
+				}
+
+				return null;
+			},
+
+			/**
+			 * @private
+			 */
 			keyUpOnDocument_: function (event) {
 				if (event.which == this.KEYS.ESC) {
 					this.collapseMessageContent_(this.focusedMessageEl);
 				}
 			},
 
+			/**
+			 * @private
+			 */
 			clickOnWhatEver_: function (event) {
-				if (event.target.classList.contains(this.messageClassName)) {
+				if (this.getMessageElWhichContainsTarget_(event.target)) {
 					return;
 				}
 
 				this.collapseMessageContent_(this.focusedMessageEl);
 			},
 
+			/**
+			 * @private
+			 */
 			expandMessageContent_: function (messageEl) {
 				this.collapseMessageContent_(this.focusedMessageEl);
 
 				messageEl.classList.add(this.CSS_CLASSES.PRE_EXPANDED);
-				messageEl.offsetTop = 2 * messageEl.offsetTop / 2; // force reflow
+				messageEl.getBoundingClientRect();
 				messageEl.classList.add(this.CSS_CLASSES.EXPANDED);
 
 				this.focusedMessageEl = messageEl;
 			},
 
+			/**
+			 * @private
+			 */
 			collapseMessageContent_: function (messageEl) {
 				if (!messageEl.classList.contains(this.CSS_CLASSES.EXPANDED)) {
 					return;
