@@ -54,6 +54,11 @@ define(
 					return;
 				}
 
+				// If there is some selection in message element => do nothing
+				if (this.elementHasSelection_()) {
+					return;
+				}
+
 				if (!messageEl.classList.contains(this.CSS_CLASSES.EXPANDED)) {
 					this.expandMessageContent_(messageEl);
 				}
@@ -127,6 +132,31 @@ define(
 				}).bind(this), 200);
 
 				this.focusedMessageEl = document.createElement('div');
+			},
+
+			elementHasSelection_: function () {
+				var selectionEndNodes = [], res = false, selectionNode;
+
+				if (typeof window.getSelection != 'function') {
+					return false;
+				}
+
+				selectionEndNodes.push(window.getSelection().anchorNode);
+				selectionEndNodes.push(window.getSelection().focusNode);
+
+				selectionEndNodes.forEach(function (node) {
+					if (!node) {
+						return;
+					}
+				});
+
+				return res;
+			},
+
+			hasTextSelection: function () {
+				return typeof window.getSelection == 'function'
+					? !!window.getSelection().toString().length
+					: false;
 			}
 		});
 

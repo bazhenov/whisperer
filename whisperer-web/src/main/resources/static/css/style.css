@@ -24,6 +24,10 @@
 	-webkit-font-smoothing: antialiased;
 }
 
+.mdl-layout__content {
+    backface-visibility: hidden;
+}
+
 .whisperer-layout__container .mdl-button {
 	will-change: initial; /*?*/
 }
@@ -153,6 +157,7 @@
 
 .whisperer__feed__record__message.expanded {
 	box-shadow: 0 0 8px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.36);
+	transform-origin: center bottom;
 	transform: scale(1.308);
 }
 

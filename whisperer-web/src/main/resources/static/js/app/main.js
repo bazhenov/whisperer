@@ -18,7 +18,8 @@ requirejs.config({
 		'RecordFormatter': '/js/app/RecordFormatter',
 		'FilterCollection': '/js/app/FilterCollection',
 		'RecordMessageClickBehavior': '/js/app/RecordMessageClickBehavior',
-		'JustInTimeFeedManager': '/js/app/JustInTimeFeedManager'
+		'JustInTimeFeedManager': '/js/app/JustInTimeFeedManager',
+		'StraightForwardFeedManager': '/js/app/StraightForwardFeedManager'
 	},
 	config: {
 		'FeedReceiver': {

@@ -7,9 +7,9 @@
  */
 
 define(
-	['underscore', 'backbone','FilterCollection', 'RecordFormatter', 'RecordMessageClickBehavior', 'JustInTimeFeedManager'],
+	['underscore', 'backbone','FilterCollection', 'RecordFormatter', 'RecordMessageClickBehavior', 'JustInTimeFeedManager', 'StraightForwardFeedManager'],
 
-	function (_, Backbone, FilterCollection, RecordFormatter, RecordMessageClickBehavior, JustInTimeFeedManager) {
+	function (_, Backbone, FilterCollection, RecordFormatter, RecordMessageClickBehavior, JustInTimeFeedManager, StraightForwardFeedManager) {
 
 		var Templates = {
 			Record: _.template(
@@ -37,7 +37,7 @@ define(
 			this.recordFormatter = new RecordFormatter;
 			this.recordMessageClickBehavior = new RecordMessageClickBehavior(this.el, this.CSS_CLASSES.MESSAGE);
 			this.filterCollection = new FilterCollection(this.META_FOR_FILTERS);
-			this.feedManager = new JustInTimeFeedManager(document.querySelector('.mdl-layout__content'), this.el.querySelector('tbody'));
+			this.feedManager = new StraightForwardFeedManager(this.el.querySelector('tbody'));
 
 			this.init();
 		}
