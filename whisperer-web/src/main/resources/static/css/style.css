@@ -26,6 +26,8 @@
 
 .mdl-layout__content {
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
 }
 
 .whisperer-layout__container .mdl-button {
