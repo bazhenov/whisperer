@@ -5,6 +5,7 @@ import me.bazhenov.whisperer.LogEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.zip.GZIPOutputStream;
 
@@ -19,9 +21,11 @@ import static com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET
 import static com.fasterxml.jackson.databind.SerializationFeature.FLUSH_AFTER_WRITE_VALUE;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static com.google.common.base.Strings.emptyToNull;
+import static com.google.common.collect.Sets.newConcurrentHashSet;
 import static com.google.common.io.Closeables.close;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
 public class WhispererController {
@@ -31,15 +35,27 @@ public class WhispererController {
 		.configure(INDENT_OUTPUT, false)
 		.configure(FLUSH_AFTER_WRITE_VALUE, false)
 		.configure(AUTO_CLOSE_TARGET, false);
-	private final Collection<URL> endpoints;
+	private final Set<URL> endpoints;
 
 	public WhispererController(Collection<URL> endpoints) {
-		this.endpoints = endpoints;
+		this.endpoints = newConcurrentHashSet(endpoints);
 	}
 
 	@RequestMapping("/")
 	public String hello() {
 		return "redirect:/index.html";
+	}
+
+	@RequestMapping(value = "/endpoints/register", produces = APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void register(@RequestParam("endpoint") URL endpoint) {
+		endpoints.add(endpoint);
+	}
+
+	@RequestMapping(value = "/endpoints", produces = APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Set<URL> getEndpoints() {
+		return endpoints;
 	}
 
 	@RequestMapping(value = "/stream", produces = "text/event-stream")
