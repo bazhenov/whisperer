@@ -72,7 +72,7 @@ export const connectToSSE = () => {
 				prefix: connectionParams.prefix,
 				level: connectionParams.severity
 			});
-			const sseConnection = new EventSource('http://localhost:8082/stream?' + getParams);
+			const sseConnection = new EventSource('/stream?' + getParams);
 			sseConnection.addEventListener('log', function(e) {
 				const { messages, filtersValues } = getState();
 				if (messages.size >= MAX_MESSAGES_COUNT) {
