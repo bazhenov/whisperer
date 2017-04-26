@@ -1,0 +1,104 @@
+.choosed-severity,
+.severity-button {
+	margin-right: 20px;
+	font-size: 100%;
+}
+
+.message-block-jammed {
+	max-height: 88px;
+	overflow-y: hidden
+}
+
+.message-block {
+	position: relative;
+	word-break: break-all;
+}
+
+.message-block-toggle-jammed {
+	position: relative;
+}
+
+.message-block-toggle-jammed.hidden {
+	display: none;
+}
+
+.message-block-toggle-jammed a {
+	position: absolute;
+	bottom: -20px;
+	right: 0;
+}
+
+.table>tbody>tr>.message-row-right-col {
+	padding-bottom: 20px;
+}
+
+.filters-radio label {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.filters-filter-options {
+	max-height: 208px;
+	overflow-y: scroll;
+	padding-right: 20px;
+}
+
+#control-buttons {
+	padding: 10px 0 10px 0;
+	margin-bottom: 20px;
+}
+
+#control-buttons a {
+	margin-right: 8px;
+}
+
+#messages-records-count {
+	margin-bottom: 10px;
+}
+
+.message-host-name,
+.message-group-name,
+.message-thread-name {
+	overflow-x: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.message-row {
+	border-top: 1px solid #eee;
+	padding: 20px 0 20px 0;
+}
+
+.message-tooltip {
+	position: relative;
+}
+
+.message-tooltip .message-tooltip-text {
+	visibility: hidden;
+	width: auto;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 4px 8px 4px 8px;
+	border-radius: 6px;
+	top: -30px;
+	position: absolute;
+	z-index: 1;
+}
+
+.message-tooltip .message-tooltip-text::after {
+	content: " ";
+	position: absolute;
+	top: 28px;
+	left: 36px;
+	margin-left: -5px;
+	border: 5px solid transparent;
+	border-top-color: black;
+}
+
+.message-tooltip:hover .message-tooltip-text {
+	visibility: visible;
+}
+
+

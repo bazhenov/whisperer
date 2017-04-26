@@ -1,0 +1,36 @@
+{
+  "name": "whisperer-web",
+  "version": "0.0.1",
+  "description": "whisperer ui",
+  "scripts": {
+    "watch": "webpack --watch -d",
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
+  },
+  "author": "Maxim Glazkov",
+  "license": "MIT",
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "moment": "^2.18.1",
+    "query-string": "^4.3.4",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "react-tooltip": "^3.3.0",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.1",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-jest": "^19.0.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^19.0.2",
+    "react-addons-perf": "^15.4.2",
+    "webpack": "^2.4.1"
+  }
+}

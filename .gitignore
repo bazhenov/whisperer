@@ -1,3 +1,5 @@
 /.idea
 target
 *.iml
+/whisperer-web/node_modules/*
+/whisperer-web/src/main/resources/static/built/*
