@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>whisperer-activation</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>Whisperer Activation Library</name>
 
 	<dependencies>
@@ -32,4 +32,17 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>farpost-releases</id>
+			<name>FarPost releases repository</name>
+			<url>http://maven.dev/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>farpost-snapshots</id>
+			<name>FarPost shapshots repository</name>
+			<url>http://maven.dev/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
