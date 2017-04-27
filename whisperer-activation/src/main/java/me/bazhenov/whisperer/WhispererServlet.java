@@ -53,6 +53,7 @@ public class WhispererServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		if (!lock.tryLock()) {
 			resp.sendError(412, "whisperer already active");
+			return;
 		}
 		try {
 			Logger rootLogger = (Logger) getLogger(ROOT_LOGGER_NAME);
