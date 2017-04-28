@@ -8,10 +8,9 @@ import {
 	CLEAR_MESSAGES,
 	UPDATE_FILTERS
 } from "./actions";
-import { emptyConnectionParams, emptyMessages, filterMessages, isMessageSuitedForFilters, emptyFilterValues,
-	createFiltersValues, updateFiltersValues } from './utils'
+import { emptyConnectionParams, emptyMessages, filterMessages, isMessageSuitedForFilters,	createFiltersValues,
+	updateFiltersValues } from './utils'
 import { MAX_MESSAGES_COUNT } from './constants'
-import { List } from 'immutable'
 
 const isListening = (state = false, action) => {
 	switch (action.type) {
@@ -42,22 +41,22 @@ const sseConnection = (state = null, action) => {
 	}
 };
 
-
 const messages = (state = emptyMessages(), action) => {
 	switch (action.type) {
 		case MESSAGE_RECEIVED:
-			const { filters, filtersValues, all, filtered } = state;
+			const { filters, filtersValues, all, filtered, nextMessageId } = state;
 			const message = action.message;
+			message.id = nextMessageId;
 			if (all.length >= MAX_MESSAGES_COUNT) return state;
-			const newAll = all.push(message);
 			return {
 				...state,
-				all: newAll,
+				all: all.push(message),
 				filtered: isMessageSuitedForFilters(message, filters) ? filtered.push(message) : filtered,
-				filtersValues: updateFiltersValues(filtersValues, filters, message)
+				filtersValues: updateFiltersValues(filtersValues, filters, message),
+				nextMessageId: nextMessageId + 1
 			};
 		case CLEAR_MESSAGES:
-			return emptyMessages();
+			return { ...emptyMessages(), nextMessageId: state.nextMessageId };
 		case UPDATE_FILTERS:
 			const newFilters = action.filters;
 			return {

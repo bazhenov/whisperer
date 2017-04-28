@@ -69,6 +69,7 @@ export const emptyMessages = () => {
 		all: new List(),
 		filtered: new List(),
 		filters: emptyFilters(),
-		filtersValues: emptyFilterValues()
+		filtersValues: emptyFilterValues(),
+		nextMessageId: 1
 	}
 };
