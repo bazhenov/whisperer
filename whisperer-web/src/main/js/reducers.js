@@ -6,10 +6,10 @@ import {
 	MESSAGE_RECEIVED,
 	SET_SSE_CONNECTION,
 	CLEAR_MESSAGES,
-	UPDATE_FILTERS,
-	SET_FILTERS_VALUES
+	UPDATE_FILTERS
 } from "./actions";
-import { emptyFilter, emptyConnectionParams, emptyFilterValues } from './utils'
+import { emptyConnectionParams, emptyMessages, filterMessages, isMessageSuitedForFilters, emptyFilterValues,
+	createFiltersValues, updateFiltersValues } from './utils'
 import { MAX_MESSAGES_COUNT } from './constants'
 import { List } from 'immutable'
 
@@ -33,18 +33,6 @@ const connectionParams = (state = emptyConnectionParams(), action) => {
 	}
 };
 
-const messages = (state = new List(), action) => {
-	switch (action.type) {
-		case MESSAGE_RECEIVED:
-			if (state.length >= MAX_MESSAGES_COUNT) return state;
-			return state.push(action.message);
-		case CLEAR_MESSAGES:
-			return new List();
-		default:
-			return state
-	}
-};
-
 const sseConnection = (state = null, action) => {
 	switch (action.type) {
 		case SET_SSE_CONNECTION:
@@ -54,19 +42,30 @@ const sseConnection = (state = null, action) => {
 	}
 };
 
-const filters = (state = emptyFilter(), action) => {
-	switch (action.type) {
-		case UPDATE_FILTERS:
-			return action.filters;
-		default:
-			return state
-	}
-};
 
-const filtersValues = (state = emptyFilterValues(), action) => {
+const messages = (state = emptyMessages(), action) => {
 	switch (action.type) {
-		case SET_FILTERS_VALUES:
-			return action.filtersValues;
+		case MESSAGE_RECEIVED:
+			const { filters, filtersValues, all, filtered } = state;
+			const message = action.message;
+			if (all.length >= MAX_MESSAGES_COUNT) return state;
+			const newAll = all.push(message);
+			return {
+				...state,
+				all: newAll,
+				filtered: isMessageSuitedForFilters(message, filters) ? filtered.push(message) : filtered,
+				filtersValues: updateFiltersValues(filtersValues, filters, message)
+			};
+		case CLEAR_MESSAGES:
+			return emptyMessages();
+		case UPDATE_FILTERS:
+			const newFilters = action.filters;
+			return {
+				...state,
+				filters: newFilters,
+				filtered: filterMessages(state.all, newFilters),
+				filtersValues: createFiltersValues(state.all, newFilters)
+			};
 		default:
 			return state
 	}
@@ -75,10 +74,8 @@ const filtersValues = (state = emptyFilterValues(), action) => {
 const rootReducer = combineReducers({
 	isListening,
 	connectionParams,
-	messages,
 	sseConnection,
-	filters,
-	filtersValues
+	messages
 });
 
 export default rootReducer;

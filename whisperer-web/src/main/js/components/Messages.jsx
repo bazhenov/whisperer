@@ -1,17 +1,9 @@
-import React, { Component, PureComponent } from 'react'
-import MessageRow from './MessageRow.jsx'
+import React from 'react'
+import Message from './Message.jsx'
 
-export default class Messages extends PureComponent {
-
-	render() {
-		const rows = this.props.messages.map((m, key) => {
-			return <MessageRow message={m} key={key + '_' + m.timestamp} />
-		});
-
-		return <div className="row">
-			<div className="col-md-12">
-				{ rows }
-			</div>
+export default ({ messages }) =>
+	<div className="row">
+		<div className="col-md-12">
+			{ messages.map((m, key) => <Message message={m} key={key + '_' + m.timestamp} />) }
 		</div>
-	}
-}
+	</div>

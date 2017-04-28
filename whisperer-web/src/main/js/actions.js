@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { newConnectionParams, updateFilterValues, isFiltersValuesChanged } from  './utils'
+import { newConnectionParams } from  './utils'
 import { SSE_RECONNECT_TIMEOUT, LS_CONNECTION_PARAMS_KEY, MAX_MESSAGES_COUNT } from './constants'
 
 export const START_LISTENING = 'START_LISTENING';
@@ -9,7 +9,6 @@ export const MESSAGE_RECEIVED = 'MESSAGE_RECEIVED';
 export const SET_SSE_CONNECTION = 'SET_SSE_CONNECTION';
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 export const UPDATE_FILTERS = 'UPDATE_FILTERS';
-export const SET_FILTERS_VALUES = 'SET_FILTERS_VALUES';
 
 export const loadConnectionParams = () => {
 	return dispatch => {
@@ -72,19 +71,14 @@ export const connectToSSE = () => {
 				prefix: connectionParams.prefix,
 				level: connectionParams.severity
 			});
-			const sseConnection = new EventSource('/stream?' + getParams);
+			const sseConnection = new EventSource('http://localhost:8082/stream?' + getParams);
 			sseConnection.addEventListener('log', function(e) {
-				const { messages, filtersValues } = getState();
-				if (messages.size >= MAX_MESSAGES_COUNT) {
+				if (getState().messages.all.size >= MAX_MESSAGES_COUNT) {
 					console.log('To many messages, can\'t store more than ' + MAX_MESSAGES_COUNT);
 					dispatch(stopListening());
 					dispatch(disconnectFromSSE());
 				} else {
 					const message = JSON.parse(e.data);
-					const newFiltersValues = updateFilterValues(filtersValues, message);
-					if (isFiltersValuesChanged(filtersValues, newFiltersValues)) {
-						dispatch(setFilterValues(newFiltersValues));
-					}
 					dispatch(receiveMessage(message))
 				}
 			}, false);
@@ -104,13 +98,6 @@ export const disconnectFromSSE = () => {
 			sseConnection.close();
 			dispatch(setSSEConnection(null));
 		}
-	}
-};
-
-export const setFilterValues = (filtersValues) => {
-	return {
-		type: SET_FILTERS_VALUES,
-		filtersValues: filtersValues
 	}
 };
 

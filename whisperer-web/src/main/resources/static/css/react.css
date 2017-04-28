@@ -4,38 +4,19 @@
 	font-size: 100%;
 }
 
-.message-block-jammed {
-	max-height: 88px;
-	overflow-y: hidden
-}
-
 .message-block {
-	position: relative;
 	word-break: break-all;
-}
-
-.message-block-toggle-jammed {
-	position: relative;
-}
-
-.message-block-toggle-jammed.hidden {
-	display: none;
-}
-
-.message-block-toggle-jammed a {
-	position: absolute;
-	bottom: -20px;
-	right: 0;
 }
 
 .table>tbody>tr>.message-row-right-col {
 	padding-bottom: 20px;
 }
 
-.filters-radio label {
+.filters-checkbox label {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+	padding-right: 30px;
 }
 
 .filters-filter-options {
@@ -101,4 +82,31 @@
 	visibility: visible;
 }
 
+.remove-filter.close {
+	font-size: 100%;
+	margin-right: -14px;
+}
 
+.filter-label-to-remove {
+	margin-top: 8px;
+	font-size: 100%;
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding-right: 20px;
+}
+
+.filter-labels {
+	margin-bottom: 4px;
+}
+
+.filters-count {
+	position: absolute;
+	top: -1px;
+	right: -16px;
+}
+
+.zero-count-filter {
+	color: darkgray;
+}

@@ -15,7 +15,6 @@ import {
 	clearMessages,
 	updateFilters
 } from '../actions';
-import { filterMessages, emptyFilter } from  './../utils';
 import { MAX_MESSAGES_TO_DISPLAY } from '../constants';
 
 class App extends Component {
@@ -61,14 +60,13 @@ class App extends Component {
 			clearMessages,
 			isListening,
 			messages,
-			updateFilters,
-			filters,
-			filtersValues
+			updateFilters
 		} = this.props;
-		const totalMessages = messages.size;
-		const filteredMessages = filterMessages(messages, filters);
+		const { all, filtered, filters, filtersValues } = messages;
+		const totalMessages = all.size;
+		const filteredCount = filtered.size;
 
-		const alert = filteredMessages.size >= MAX_MESSAGES_TO_DISPLAY ? <div className="row">
+		const alert = filteredCount >= MAX_MESSAGES_TO_DISPLAY ? <div className="row">
 			<div className="col-md-12">
 				<div className="alert alert-warning" role="alert">
 					Too many messages! Only first {MAX_MESSAGES_TO_DISPLAY} was showed.
@@ -76,7 +74,7 @@ class App extends Component {
 			</div>
 		</div> : '';
 
-		const messagesToDisplay = filteredMessages.slice(0, MAX_MESSAGES_TO_DISPLAY);
+		const messagesToDisplay = filtered.slice(0, MAX_MESSAGES_TO_DISPLAY);
 
 		return <div>
 			<nav className="navbar navbar-default">
@@ -91,21 +89,17 @@ class App extends Component {
 				<div className="col-md-4">
 					<Form updateCurrentConnectionParams={this.updateCurrentConnectionParams} isListening={isListening}
 								connectionParams={this.state.currentConnectionParams} />
+					<Controls isListening={isListening} stopListening={stopListening} clearMessages={clearMessages}
+										startListening={this.handleStartListening} hasMessages={totalMessages > 0} />
 				</div>
 				<div className="col-md-8">
 					<Filters filters={filters} updateFilters={updateFilters} filtersValues={filtersValues} />
 				</div>
 			</div>
-			<div className="row">
-				<div className="col-md-12">
-					<Controls isListening={isListening} stopListening={stopListening} clearMessages={clearMessages}
-										startListening={this.handleStartListening} hasMessages={totalMessages > 0} />
-				</div>
-			</div>
 
 			<div className="row">
 				<div className="col-md-12">
-					<MessagesCount totalCount={messages.size} filteredCount={filteredMessages.size} />
+					<MessagesCount totalCount={totalMessages} filteredCount={filteredCount} />
 					<Messages messages={messagesToDisplay} />
 				</div>
 			</div>
@@ -135,9 +129,6 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(loadConnectionParams())
 		},
 		clearMessages: () => {
-			dispatch(
-				updateFilters(emptyFilter())
-			);
 			dispatch(clearMessages());
 		},
 		updateFilters: (filters) => {
