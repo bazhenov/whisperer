@@ -71,7 +71,7 @@ export const connectToSSE = () => {
 				prefix: connectionParams.prefix,
 				level: connectionParams.severity
 			});
-			const sseConnection = new EventSource('http://localhost:8082/stream?' + getParams);
+			const sseConnection = new EventSource('/stream?' + getParams);
 			sseConnection.addEventListener('log', function(e) {
 				if (getState().messages.all.size >= MAX_MESSAGES_COUNT) {
 					console.log('To many messages, can\'t store more than ' + MAX_MESSAGES_COUNT);
