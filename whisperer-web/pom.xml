@@ -118,6 +118,9 @@
 						<goals>
 							<goal>webpack</goal>
 						</goals>
+						<configuration>
+							<arguments>-p</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
