@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Message 1`] = `
+<div
+  className="row message-row"
+>
+  <div
+    className="col-xs-3 message-row-left-col"
+  >
+    <div>
+      <small>
+        14:17:09.683
+      </small>
+    </div>
+    <div
+      className="message-host-name"
+    >
+      <strong>
+        http://search-coord5.akod.loc
+      </strong>
+    </div>
+    <div>
+      <div
+        className="message-tooltip"
+      >
+        <div
+          className="message-group-name"
+        >
+          c.f.s.CoordinatorSearchEngine
+        </div>
+        <span
+          className="message-tooltip-text"
+        >
+          com.farpost.search.CoordinatorSearchEngine
+        </span>
+      </div>
+    </div>
+    <div
+      className="message-thread-name"
+    >
+      thread: 
+      qtp-12345
+    </div>
+  </div>
+  <div
+    className="col-xs-9 message-row-right-col"
+  >
+    <div
+      className="message-block"
+    >
+      <span>
+        Delegating execution to command 
+      </span>
+      <a
+        href="#"
+        onClick={[Function]}
+      >
+        {
+        ...
+        }
+      </a>
+      <span>
+        , query: '
+      </span>
+      <a
+        href="#"
+        onClick={[Function]}
+      >
+        {
+        ...
+        }
+      </a>
+      <span>
+        ', sort: 
+      </span>
+      <span>
+        null
+      </span>
+      <span>
+        , facets: 
+      </span>
+      <a
+        href="#"
+        onClick={[Function]}
+      >
+        {
+        ...
+        }
+      </a>
+      <span>
+        , filter: '
+      </span>
+      <a
+        href="#"
+        onClick={[Function]}
+      >
+        {
+        ...
+        }
+      </a>
+      <span>
+        '
+      </span>
+    </div>
+  </div>
+</div>
+`;

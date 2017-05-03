@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MessageArgument 1`] = `
+<MessageArgument
+  text="some text some text some text some text"
+>
+  <a
+    href="#"
+    onClick={[Function]}
+  >
+    {
+    ...
+    }
+  </a>
+</MessageArgument>
+`;
+
+exports[`MessageArgument 2`] = `
+<MessageArgument
+  text="some text some text some text some text"
+>
+  <span>
+    some text some text some text some text
+  </span>
+</MessageArgument>
+`;

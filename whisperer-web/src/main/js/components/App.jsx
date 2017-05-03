@@ -4,6 +4,7 @@ import Messages from './Messages.jsx'
 import Filters from './Filters.jsx';
 import MessagesCount from './MessagesCount.jsx';
 import Controls from './Controls.jsx'
+import ToManyMessagesAlert from './ToManyMessagesAlert.jsx'
 import { connect } from "react-redux";
 import {
 	startListening,
@@ -17,7 +18,7 @@ import {
 } from '../actions';
 import { MAX_MESSAGES_TO_DISPLAY } from '../constants';
 
-class App extends Component {
+export class App extends Component {
 
 	constructor(props) {
 		super(props);
@@ -66,14 +67,6 @@ class App extends Component {
 		const totalMessages = all.size;
 		const filteredCount = filtered.size;
 
-		const alert = filteredCount >= MAX_MESSAGES_TO_DISPLAY ? <div className="row">
-			<div className="col-md-12">
-				<div className="alert alert-warning" role="alert">
-					Too many messages! Only first {MAX_MESSAGES_TO_DISPLAY} was showed.
-				</div>
-			</div>
-		</div> : '';
-
 		const messagesToDisplay = filtered.slice(0, MAX_MESSAGES_TO_DISPLAY);
 
 		return <div>
@@ -103,7 +96,7 @@ class App extends Component {
 					<Messages messages={messagesToDisplay} />
 				</div>
 			</div>
-			{alert}
+			<ToManyMessagesAlert filteredCount={filteredCount} />
 		</div>;
 	}
 }

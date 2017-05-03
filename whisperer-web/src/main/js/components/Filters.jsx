@@ -40,15 +40,7 @@ export default class Filters extends Component {
 
 	handleChange(e) {
 		const { name, value, checked } = e.target;
-		if (checked) {
-			this.addFilter(name, value);
-		} else {
-			this.removeFilter(name, value);
-		}
-	}
-
-	_getPackageNames() {
-		return this._getOptions(this.props.filtersValues.packageNames, this.state.packageNameFilter);
+		checked ? this.addFilter(name, value) : this.removeFilter(name, value);
 	}
 
 	_getOptions(values, filter) {
@@ -58,15 +50,7 @@ export default class Filters extends Component {
 				if (a.count === 0 && b.count > 0) return 1;
 				if (a.count > 0 && b.count === 0) return -1;
 				return a.value.localeCompare(b.value);
-			}).filter((v, k) => filter.length === 0 || v.toLowerCase().indexOf(filter.toLowerCase()) > -1);
-	}
-
-	_getHostNames() {
-		return this._getOptions(this.props.filtersValues.hostNames, this.state.hostNameFilter);
-	}
-
-	_getThreadNames() {
-		return this._getOptions(this.props.filtersValues.threadNames, this.state.threadNameFilter);
+			}).filter((k, v) => filter.length === 0 || v.toLowerCase().indexOf(filter.toLowerCase()) > -1);
 	}
 
 	_getCheckboxes(options, name) {
@@ -114,26 +98,23 @@ export default class Filters extends Component {
 		return <div className="filter-labels">{ labels }</div>;
 	}
 
+	renderFilter(label, filterName, field) {
+		const options = this._getOptions(this.props.filtersValues[field], this.state[filterName]);
+		return <div className="col-xs-4">
+			{this.renderFilterFilter(label, filterName)}
+			{this._getCheckboxes(options, field)}
+			{this._filtersLabels(field)}
+		</div>
+	}
+
 	render() {
 		if (this._filtersIsEmpty()) return null;
 		return <div>
 			<h3>Filters</h3>
 			<div className="row">
-				<div className="col-xs-4">
-					{this.renderFilterFilter('Package Name', 'packageNameFilter')}
-					{this._getCheckboxes(this._getPackageNames(), 'packageNames')}
-					{this._filtersLabels('packageNames')}
-				</div>
-				<div className="col-xs-4">
-					{this.renderFilterFilter('Host Name', 'hostNameFilter')}
-					{this._getCheckboxes(this._getHostNames(), 'hostNames')}
-					{this._filtersLabels('hostNames')}
-				</div>
-				<div className="col-xs-4">
-					{this.renderFilterFilter('Thread Name', 'threadNameFilter')}
-					{this._getCheckboxes(this._getThreadNames(), 'threadNames')}
-					{this._filtersLabels('threadNames')}
-				</div>
+				{this.renderFilter('Package Name', 'packageNameFilter', 'packageNames')}
+				{this.renderFilter('Host Name', 'hostNameFilter', 'hostNames')}
+				{this.renderFilter('Thread Name', 'threadNameFilter', 'threadNames')}
 			</div>
 		</div>
 	}

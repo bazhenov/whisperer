@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
-import { getGroupShortName } from '../utils'
 import moment from 'moment'
 import MessageArgument from './MessageArgument.jsx';
 
 export default class Message extends Component {
-
-	_getArgs() {
-		return this.props.message.args || [];
-	}
 
 	shouldComponentUpdate() {
 		return false;
@@ -15,7 +10,6 @@ export default class Message extends Component {
 
 	render() {
 		const { message } = this.props;
-
 		const args = message.args || [];
 		const textParts = message.message.split('{}').reduce((values, part, i) => {
 			values.push(<span key={'p' + i}>{part}</span>);
@@ -39,7 +33,7 @@ export default class Message extends Component {
 				</div>
 				<div>
 					<div className="message-tooltip">
-						<div className="message-group-name">{getGroupShortName(message)}</div>
+						<div className="message-group-name">{message.shortGroupName}</div>
 						<span className="message-tooltip-text">{message.group}</span>
 					</div>
 				</div>

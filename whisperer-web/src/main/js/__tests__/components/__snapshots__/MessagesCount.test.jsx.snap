@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MessagesCount 1`] = `null`;
+
+exports[`MessagesCount 2`] = `
+<div
+  id="messages-records-count"
+>
+  <strong>
+    10
+  </strong>
+  
+   records
+</div>
+`;
+
+exports[`MessagesCount 3`] = `
+<div
+  id="messages-records-count"
+>
+  <strong>
+    5
+  </strong>
+   (10)
+   records
+</div>
+`;

@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SeverityFilter rendering 1`] = `
+<div
+  className="form-group"
+>
+  <div>
+    <label>
+      Severity
+    </label>
+  </div>
+  <span
+    className="choosed-severity label label-primary"
+  >
+    INFO
+  </span>
+  <a
+    className="severity-button"
+    href="#"
+    onClick={[Function]}
+  >
+    WARN
+  </a>
+  <a
+    className="severity-button"
+    href="#"
+    onClick={[Function]}
+  >
+    ERROR
+  </a>
+  <a
+    className="severity-button"
+    href="#"
+    onClick={[Function]}
+  >
+    DEBUG
+  </a>
+  <a
+    className="severity-button"
+    href="#"
+    onClick={[Function]}
+  >
+    TRACE
+  </a>
+</div>
+`;
+
+exports[`SeverityFilter rendering 2`] = `
+<div
+  className="form-group"
+>
+  <div>
+    <label>
+      Severity
+    </label>
+  </div>
+  <span
+    className="choosed-severity label label-primary"
+  >
+    INFO
+  </span>
+  <span
+    className="severity-button"
+  >
+    WARN
+  </span>
+  <span
+    className="severity-button"
+  >
+    ERROR
+  </span>
+  <span
+    className="severity-button"
+  >
+    DEBUG
+  </span>
+  <span
+    className="severity-button"
+  >
+    TRACE
+  </span>
+</div>
+`;

@@ -1,17 +1,21 @@
 import { Set, List, Map } from 'immutable';
 
-export const getGroupShortName = (message) => {
-	const parts = (message.group || "").split('.');
+export const getGroupShortName = (group) => {
+	const parts = (group || '').split('.');
 	return parts.reduce((name, part, i) => {
 		if (part.length === 0) return name;
 		return name + (name.length === 0 ? '' : '.') + (i === (parts.length - 1) ? part : part[0])
 	}, '');
 };
 
+const isEmptyOrContains = (col, value) => {
+	return col.isEmpty() || col.contains(value);
+};
+
 export const isMessageSuitedForFilters = (m, filters) => {
-	if (!(filters.packageNames.isEmpty() || filters.packageNames.contains(getGroupShortName(m)))) return false;
-	if (!(filters.hostNames.isEmpty() || filters.hostNames.contains(m.host))) return false;
-	return filters.threadNames.isEmpty() || filters.threadNames.contains(m.thread);
+	return isEmptyOrContains(filters.packageNames, m.shortGroupName) &&
+		isEmptyOrContains(filters.hostNames, m.host) &&
+		isEmptyOrContains(filters.threadNames, m.thread);
 };
 
 export const filterMessages = (messages, filters) => {
@@ -19,9 +23,11 @@ export const filterMessages = (messages, filters) => {
 };
 
 export const emptyFilters = () => {
-	return {
-		packageNames: new Set(), hostNames: new Set(), threadNames: new Set()
-	};
+	return buildFilters(Set(), Set(), Set());
+};
+
+export const buildFilters = (hostNames, packageNames, threadNames) => {
+	return { hostNames, packageNames, threadNames };
 };
 
 export const emptyConnectionParams = () => {
@@ -44,10 +50,9 @@ export const updateFiltersValues = (current, filters, message) => {
 		res = res.has(value) ? res : res.set(value, 0);
 		return res;
 	};
-
 	return {
 		hostNames: updateFilterValues('hostNames', message.host),
-		packageNames: updateFilterValues('packageNames', getGroupShortName(message)),
+		packageNames: updateFilterValues('packageNames', message.shortGroupName),
 		threadNames: updateFilterValues('threadNames', message.thread)
 	};
 };
@@ -57,11 +62,11 @@ export const createFiltersValues = (all, filters) => {
 };
 
 export const emptyFilterValues = () => {
-	return {
-		hostNames: new Map(),
-		packageNames: new Map(),
-		threadNames: new Map()
-	};
+	return buildFilterValues(Map(), Map(), Map());
+};
+
+export const buildFilterValues = (hostNames, packageNames, threadNames) => {
+	return { hostNames, packageNames, threadNames };
 };
 
 export const emptyMessages = () => {

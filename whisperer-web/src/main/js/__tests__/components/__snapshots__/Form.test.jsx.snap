@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form rendering 1`] = `
+<div>
+  <h3>
+    Connection parameters
+  </h3>
+  <form
+    onSubmit={[Function]}
+  >
+    <fieldset
+      disabled={false}
+    >
+      <div
+        className="form-group"
+      >
+        N
+        <label
+          htmlFor="mdcKeyInput"
+        >
+          MDC key name
+        </label>
+        <input
+          className="form-control"
+          id="mdcKeyInput"
+          name="key"
+          onChange={[Function]}
+          type="text"
+          value="clientId"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="mdcValueInput"
+        >
+          Expected value
+        </label>
+        <input
+          className="form-control"
+          id="mdcValueInput"
+          name="value"
+          onChange={[Function]}
+          type="text"
+          value="some_ring"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="logPrefixInput"
+        >
+          Log prefix
+        </label>
+        <input
+          className="form-control"
+          id="logPrefixInput"
+          name="prefix"
+          onChange={[Function]}
+          type="text"
+          value="com.farpost.search"
+        />
+      </div>
+    </fieldset>
+    <div
+      className="form-group"
+    >
+      <div>
+        <label>
+          Severity
+        </label>
+      </div>
+      <span
+        className="choosed-severity label label-primary"
+      >
+        INFO
+      </span>
+      <a
+        className="severity-button"
+        href="#"
+        onClick={[Function]}
+      >
+        WARN
+      </a>
+      <a
+        className="severity-button"
+        href="#"
+        onClick={[Function]}
+      >
+        ERROR
+      </a>
+      <a
+        className="severity-button"
+        href="#"
+        onClick={[Function]}
+      >
+        DEBUG
+      </a>
+      <a
+        className="severity-button"
+        href="#"
+        onClick={[Function]}
+      >
+        TRACE
+      </a>
+    </div>
+  </form>
+</div>
+`;
+
+exports[`Form rendering 2`] = `
+<div>
+  <h3>
+    Connection parameters
+  </h3>
+  <form
+    onSubmit={[Function]}
+  >
+    <fieldset
+      disabled={true}
+    >
+      <div
+        className="form-group"
+      >
+        N
+        <label
+          htmlFor="mdcKeyInput"
+        >
+          MDC key name
+        </label>
+        <input
+          className="form-control"
+          id="mdcKeyInput"
+          name="key"
+          onChange={[Function]}
+          type="text"
+          value="clientId"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="mdcValueInput"
+        >
+          Expected value
+        </label>
+        <input
+          className="form-control"
+          id="mdcValueInput"
+          name="value"
+          onChange={[Function]}
+          type="text"
+          value="some_ring"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="logPrefixInput"
+        >
+          Log prefix
+        </label>
+        <input
+          className="form-control"
+          id="logPrefixInput"
+          name="prefix"
+          onChange={[Function]}
+          type="text"
+          value="com.farpost.search"
+        />
+      </div>
+    </fieldset>
+    <div
+      className="form-group"
+    >
+      <div>
+        <label>
+          Severity
+        </label>
+      </div>
+      <span
+        className="choosed-severity label label-primary"
+      >
+        INFO
+      </span>
+      <span
+        className="severity-button"
+      >
+        WARN
+      </span>
+      <span
+        className="severity-button"
+      >
+        ERROR
+      </span>
+      <span
+        className="severity-button"
+      >
+        DEBUG
+      </span>
+      <span
+        className="severity-button"
+      >
+        TRACE
+      </span>
+    </div>
+  </form>
+</div>
+`;

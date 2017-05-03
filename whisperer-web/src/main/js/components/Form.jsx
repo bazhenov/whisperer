@@ -23,7 +23,7 @@ export default class Form extends Component {
 			<h3>Connection parameters</h3>
 			<form onSubmit={(e) => e.preventDefault()} >
 				<fieldset disabled={isListening}>
-					<div className="form-group">
+					<div className="form-group">N
 						<label htmlFor="mdcKeyInput">MDC key name</label>
 						<input type="text" name="key" onChange={this.handleInputChange} className="form-control"
 									 id="mdcKeyInput" value={connectionParams.key} />

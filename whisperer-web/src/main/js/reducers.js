@@ -9,7 +9,7 @@ import {
 	UPDATE_FILTERS
 } from "./actions";
 import { emptyConnectionParams, emptyMessages, filterMessages, isMessageSuitedForFilters,	createFiltersValues,
-	updateFiltersValues } from './utils'
+	updateFiltersValues, getGroupShortName } from './utils'
 import { MAX_MESSAGES_COUNT } from './constants'
 
 const isListening = (state = false, action) => {
@@ -45,9 +45,11 @@ const messages = (state = emptyMessages(), action) => {
 	switch (action.type) {
 		case MESSAGE_RECEIVED:
 			const { filters, filtersValues, all, filtered, nextMessageId } = state;
-			const message = action.message;
-			message.id = nextMessageId;
-			if (all.length >= MAX_MESSAGES_COUNT) return state;
+			if (all.size >= MAX_MESSAGES_COUNT) return state;
+			const message = { ...action.message,
+				id: nextMessageId,
+				shortGroupName: getGroupShortName(action.message.group)
+			};
 			return {
 				...state,
 				all: all.push(message),
