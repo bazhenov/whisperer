@@ -8,9 +8,8 @@ exports[`MessageArgument 1`] = `
     href="#"
     onClick={[Function]}
   >
-    {
+    some text some te
     ...
-    }
   </a>
 </MessageArgument>
 `;

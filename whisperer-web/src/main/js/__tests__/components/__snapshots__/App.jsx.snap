@@ -2,34 +2,15 @@
 
 exports[`App regular 1`] = `
 <div>
-  <nav
-    className="navbar navbar-default"
-  >
-    <div
-      className="container-fluid"
-    >
-      <div
-        className="navbar-header"
-      >
-        <a
-          className="navbar-brand"
-          href="/"
-        >
-          Whisperer
-        </a>
-      </div>
-    </div>
-  </nav>
   <div
     className="row"
   >
     <div
-      className="col-md-4"
+      className="col-md-3"
     >
-      <div>
-        <h3>
-          Connection parameters
-        </h3>
+      <div
+        className="well"
+      >
         <form
           onSubmit={[Function]}
         >
@@ -39,7 +20,6 @@ exports[`App regular 1`] = `
             <div
               className="form-group"
             >
-              N
               <label
                 htmlFor="mdcKeyInput"
               >
@@ -73,6 +53,7 @@ exports[`App regular 1`] = `
             </div>
             <div
               className="form-group"
+              id="log-prefix-input-div"
             >
               <label
                 htmlFor="logPrefixInput"
@@ -88,63 +69,67 @@ exports[`App regular 1`] = `
                 value="com.farpost.search"
               />
             </div>
-          </fieldset>
-          <div
-            className="form-group"
-          >
-            <div>
-              <label>
+            <div
+              className="form-group"
+              id="severity-input-div"
+            >
+              <label
+                htmlFor="severityInput"
+              >
                 Severity
               </label>
+              <select
+                className="form-control"
+                id="severityInput"
+                name="severity"
+                onChange={[Function]}
+                value="INFO"
+              >
+                <option
+                  value="TRACE"
+                >
+                  TRACE
+                </option>
+                <option
+                  value="DEBUG"
+                >
+                  DEBUG
+                </option>
+                <option
+                  value="INFO"
+                >
+                  INFO
+                </option>
+                <option
+                  value="WARN"
+                >
+                  WARN
+                </option>
+                <option
+                  value="ERROR"
+                >
+                  ERROR
+                </option>
+              </select>
             </div>
-            <span
-              className="choosed-severity label label-primary"
-            >
-              INFO
-            </span>
-            <span
-              className="severity-button"
-            >
-              WARN
-            </span>
-            <span
-              className="severity-button"
-            >
-              ERROR
-            </span>
-            <span
-              className="severity-button"
-            >
-              DEBUG
-            </span>
-            <span
-              className="severity-button"
-            >
-              TRACE
-            </span>
-          </div>
+          </fieldset>
         </form>
-      </div>
-      <div
-        id="control-buttons"
-      >
         <a
-          className="btn btn-default"
+          className="connection-form-button btn btn-danger"
           href="#"
           onClick={[Function]}
         >
           STOP
         </a>
-        
       </div>
     </div>
     <div
-      className="col-md-8"
+      className="col-md-9"
     >
-      <div>
-        <h3>
-          Filters
-        </h3>
+      <div
+        className="well"
+        id="filters"
+      >
         <div
           className="row"
         >
@@ -190,7 +175,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -215,7 +200,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     2
                   </span>
@@ -287,7 +272,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     4
                   </span>
@@ -312,7 +297,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -337,7 +322,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     3
                   </span>
@@ -427,7 +412,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     6
                   </span>
@@ -452,7 +437,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -477,7 +462,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     4
                   </span>
@@ -502,7 +487,7 @@ exports[`App regular 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     0
                   </span>
@@ -561,138 +546,116 @@ exports[`App regular 1`] = `
       className="col-md-12"
     >
       <div
-        id="messages-records-count"
-      >
-        <strong />
-        
-         records
-      </div>
-      <div
-        className="row"
+        className="messages"
       >
         <div
-          className="col-md-12"
+          id="messages-records-count"
         >
+          <strong>
+            
+             records
+          </strong>
+          <a
+            className="btn btn-danger"
+            href="#"
+            id="messages-clear-button"
+            onClick={[Function]}
+          >
+            CLEAR
+          </a>
+        </div>
+        <div>
           <div
-            className="row message-row"
+            className="message-row"
           >
             <div
-              className="col-xs-3 message-row-left-col"
+              className="message-head"
             >
-              <div>
-                <small>
-                  14:17:09.683
-                </small>
+              <div
+                className="message-time"
+              >
+                14:17:09.683
               </div>
               <div
-                className="message-host-name"
+                className="message-host"
               >
-                <strong>
-                  http://search-coord5.akod.loc
-                </strong>
-              </div>
-              <div>
-                <div
-                  className="message-tooltip"
-                >
-                  <div
-                    className="message-group-name"
-                  >
-                    c.f.s.CoordinatorSearchEngine
-                  </div>
-                  <span
-                    className="message-tooltip-text"
-                  >
-                    com.farpost.search.CoordinatorSearchEngine
-                  </span>
-                </div>
+                @
+                http://search-coord5.akod.loc
               </div>
               <div
-                className="message-thread-name"
+                className="message-group"
               >
-                thread: 
+                c.f.s.CoordinatorSearchEngine
+              </div>
+              <div
+                className="message-thread"
+              >
                 qtp-12345
               </div>
             </div>
             <div
-              className="col-xs-9 message-row-right-col"
+              className="message-content"
             >
-              <div
-                className="message-block"
+              <span>
+                Delegating execution to command 
+              </span>
+              <span>
+                StagedSearchQuery
+              </span>
+              <span>
+                , query: '
+              </span>
+              <a
+                href="#"
+                onClick={[Function]}
               >
-                <span>
-                  Delegating execution to command 
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  , query: '
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  ', sort: 
-                </span>
-                <span>
-                  null
-                </span>
-                <span>
-                  , facets: 
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  , filter: '
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  '
-                </span>
-              </div>
+                ftext contains('s
+                ...
+              </a>
+              <span>
+                ', sort: 
+              </span>
+              <span>
+                null
+              </span>
+              <span>
+                , facets: 
+              </span>
+              <span>
+                directoryId
+              </span>
+              <span>
+                , filter: '
+              </span>
+              <a
+                href="#"
+                onClick={[Function]}
+              >
+                siteId!='1632' an
+                ...
+              </a>
+              <span>
+                '
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className="row"
-  >
-    <div
-      className="col-md-12"
-    >
-      <div
-        className="alert alert-warning"
-        role="alert"
-      >
-        Too many messages! Only first 
-        1000
-         was showed.
+        <div
+          className="row"
+        >
+          <div
+            className="col-md-12"
+          >
+            <div
+              className="alert alert-warning"
+              role="alert"
+            >
+              Too many messages! Only first 
+              1000
+               was showed.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -701,34 +664,15 @@ exports[`App regular 1`] = `
 
 exports[`App to many message to display 1`] = `
 <div>
-  <nav
-    className="navbar navbar-default"
-  >
-    <div
-      className="container-fluid"
-    >
-      <div
-        className="navbar-header"
-      >
-        <a
-          className="navbar-brand"
-          href="/"
-        >
-          Whisperer
-        </a>
-      </div>
-    </div>
-  </nav>
   <div
     className="row"
   >
     <div
-      className="col-md-4"
+      className="col-md-3"
     >
-      <div>
-        <h3>
-          Connection parameters
-        </h3>
+      <div
+        className="well"
+      >
         <form
           onSubmit={[Function]}
         >
@@ -738,7 +682,6 @@ exports[`App to many message to display 1`] = `
             <div
               className="form-group"
             >
-              N
               <label
                 htmlFor="mdcKeyInput"
               >
@@ -772,6 +715,7 @@ exports[`App to many message to display 1`] = `
             </div>
             <div
               className="form-group"
+              id="log-prefix-input-div"
             >
               <label
                 htmlFor="logPrefixInput"
@@ -787,63 +731,67 @@ exports[`App to many message to display 1`] = `
                 value="com.farpost.search"
               />
             </div>
-          </fieldset>
-          <div
-            className="form-group"
-          >
-            <div>
-              <label>
+            <div
+              className="form-group"
+              id="severity-input-div"
+            >
+              <label
+                htmlFor="severityInput"
+              >
                 Severity
               </label>
+              <select
+                className="form-control"
+                id="severityInput"
+                name="severity"
+                onChange={[Function]}
+                value="INFO"
+              >
+                <option
+                  value="TRACE"
+                >
+                  TRACE
+                </option>
+                <option
+                  value="DEBUG"
+                >
+                  DEBUG
+                </option>
+                <option
+                  value="INFO"
+                >
+                  INFO
+                </option>
+                <option
+                  value="WARN"
+                >
+                  WARN
+                </option>
+                <option
+                  value="ERROR"
+                >
+                  ERROR
+                </option>
+              </select>
             </div>
-            <span
-              className="choosed-severity label label-primary"
-            >
-              INFO
-            </span>
-            <span
-              className="severity-button"
-            >
-              WARN
-            </span>
-            <span
-              className="severity-button"
-            >
-              ERROR
-            </span>
-            <span
-              className="severity-button"
-            >
-              DEBUG
-            </span>
-            <span
-              className="severity-button"
-            >
-              TRACE
-            </span>
-          </div>
+          </fieldset>
         </form>
-      </div>
-      <div
-        id="control-buttons"
-      >
         <a
-          className="btn btn-default"
+          className="connection-form-button btn btn-danger"
           href="#"
           onClick={[Function]}
         >
           STOP
         </a>
-        
       </div>
     </div>
     <div
-      className="col-md-8"
+      className="col-md-9"
     >
-      <div>
-        <h3>
-          Filters
-        </h3>
+      <div
+        className="well"
+        id="filters"
+      >
         <div
           className="row"
         >
@@ -889,7 +837,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -914,7 +862,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     2
                   </span>
@@ -986,7 +934,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     4
                   </span>
@@ -1011,7 +959,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -1036,7 +984,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     3
                   </span>
@@ -1126,7 +1074,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     6
                   </span>
@@ -1151,7 +1099,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     5
                   </span>
@@ -1176,7 +1124,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     4
                   </span>
@@ -1201,7 +1149,7 @@ exports[`App to many message to display 1`] = `
                   className="filters-count"
                 >
                   <span
-                    className="label label-default"
+                    className="filter-count-label"
                   >
                     0
                   </span>
@@ -1260,138 +1208,116 @@ exports[`App to many message to display 1`] = `
       className="col-md-12"
     >
       <div
-        id="messages-records-count"
-      >
-        <strong />
-        
-         records
-      </div>
-      <div
-        className="row"
+        className="messages"
       >
         <div
-          className="col-md-12"
+          id="messages-records-count"
         >
+          <strong>
+            
+             records
+          </strong>
+          <a
+            className="btn btn-danger"
+            href="#"
+            id="messages-clear-button"
+            onClick={[Function]}
+          >
+            CLEAR
+          </a>
+        </div>
+        <div>
           <div
-            className="row message-row"
+            className="message-row"
           >
             <div
-              className="col-xs-3 message-row-left-col"
+              className="message-head"
             >
-              <div>
-                <small>
-                  14:17:09.683
-                </small>
+              <div
+                className="message-time"
+              >
+                14:17:09.683
               </div>
               <div
-                className="message-host-name"
+                className="message-host"
               >
-                <strong>
-                  http://search-coord5.akod.loc
-                </strong>
-              </div>
-              <div>
-                <div
-                  className="message-tooltip"
-                >
-                  <div
-                    className="message-group-name"
-                  >
-                    c.f.s.CoordinatorSearchEngine
-                  </div>
-                  <span
-                    className="message-tooltip-text"
-                  >
-                    com.farpost.search.CoordinatorSearchEngine
-                  </span>
-                </div>
+                @
+                http://search-coord5.akod.loc
               </div>
               <div
-                className="message-thread-name"
+                className="message-group"
               >
-                thread: 
+                c.f.s.CoordinatorSearchEngine
+              </div>
+              <div
+                className="message-thread"
+              >
                 qtp-12345
               </div>
             </div>
             <div
-              className="col-xs-9 message-row-right-col"
+              className="message-content"
             >
-              <div
-                className="message-block"
+              <span>
+                Delegating execution to command 
+              </span>
+              <span>
+                StagedSearchQuery
+              </span>
+              <span>
+                , query: '
+              </span>
+              <a
+                href="#"
+                onClick={[Function]}
               >
-                <span>
-                  Delegating execution to command 
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  , query: '
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  ', sort: 
-                </span>
-                <span>
-                  null
-                </span>
-                <span>
-                  , facets: 
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  , filter: '
-                </span>
-                <a
-                  href="#"
-                  onClick={[Function]}
-                >
-                  {
-                  ...
-                  }
-                </a>
-                <span>
-                  '
-                </span>
-              </div>
+                ftext contains('s
+                ...
+              </a>
+              <span>
+                ', sort: 
+              </span>
+              <span>
+                null
+              </span>
+              <span>
+                , facets: 
+              </span>
+              <span>
+                directoryId
+              </span>
+              <span>
+                , filter: '
+              </span>
+              <a
+                href="#"
+                onClick={[Function]}
+              >
+                siteId!='1632' an
+                ...
+              </a>
+              <span>
+                '
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className="row"
-  >
-    <div
-      className="col-md-12"
-    >
-      <div
-        className="alert alert-warning"
-        role="alert"
-      >
-        Too many messages! Only first 
-        1000
-         was showed.
+        <div
+          className="row"
+        >
+          <div
+            className="col-md-12"
+          >
+            <div
+              className="alert alert-warning"
+              role="alert"
+            >
+              Too many messages! Only first 
+              1000
+               was showed.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

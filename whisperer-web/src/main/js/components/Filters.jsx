@@ -62,7 +62,7 @@ export default class Filters extends Component {
 											checked={filters[name].contains(value)} />{value}
 				</label>
 				<div className="filters-count">
-					<span className="label label-default">{count}</span>
+					<span className="filter-count-label">{count}</span>
 				</div>
 			</div>
 		}).toArray();
@@ -109,8 +109,7 @@ export default class Filters extends Component {
 
 	render() {
 		if (this._filtersIsEmpty()) return null;
-		return <div>
-			<h3>Filters</h3>
+		return <div className="well" id="filters">
 			<div className="row">
 				{this.renderFilter('Package Name', 'packageNameFilter', 'packageNames')}
 				{this.renderFilter('Host Name', 'hostNameFilter', 'hostNames')}

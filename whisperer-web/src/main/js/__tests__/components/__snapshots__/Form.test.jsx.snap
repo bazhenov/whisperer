@@ -1,10 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Form rendering 1`] = `
-<div>
-  <h3>
-    Connection parameters
-  </h3>
+<div
+  className="well"
+>
   <form
     onSubmit={[Function]}
   >
@@ -14,7 +13,6 @@ exports[`Form rendering 1`] = `
       <div
         className="form-group"
       >
-        N
         <label
           htmlFor="mdcKeyInput"
         >
@@ -48,6 +46,7 @@ exports[`Form rendering 1`] = `
       </div>
       <div
         className="form-group"
+        id="log-prefix-input-div"
       >
         <label
           htmlFor="logPrefixInput"
@@ -63,58 +62,65 @@ exports[`Form rendering 1`] = `
           value="com.farpost.search"
         />
       </div>
-    </fieldset>
-    <div
-      className="form-group"
-    >
-      <div>
-        <label>
+      <div
+        className="form-group"
+        id="severity-input-div"
+      >
+        <label
+          htmlFor="severityInput"
+        >
           Severity
         </label>
+        <select
+          className="form-control"
+          id="severityInput"
+          name="severity"
+          onChange={[Function]}
+          value="INFO"
+        >
+          <option
+            value="TRACE"
+          >
+            TRACE
+          </option>
+          <option
+            value="DEBUG"
+          >
+            DEBUG
+          </option>
+          <option
+            value="INFO"
+          >
+            INFO
+          </option>
+          <option
+            value="WARN"
+          >
+            WARN
+          </option>
+          <option
+            value="ERROR"
+          >
+            ERROR
+          </option>
+        </select>
       </div>
-      <span
-        className="choosed-severity label label-primary"
-      >
-        INFO
-      </span>
-      <a
-        className="severity-button"
-        href="#"
-        onClick={[Function]}
-      >
-        WARN
-      </a>
-      <a
-        className="severity-button"
-        href="#"
-        onClick={[Function]}
-      >
-        ERROR
-      </a>
-      <a
-        className="severity-button"
-        href="#"
-        onClick={[Function]}
-      >
-        DEBUG
-      </a>
-      <a
-        className="severity-button"
-        href="#"
-        onClick={[Function]}
-      >
-        TRACE
-      </a>
-    </div>
+    </fieldset>
   </form>
+  <a
+    className="connection-form-button btn btn-success"
+    href="#"
+    onClick={[Function]}
+  >
+    LISTEN
+  </a>
 </div>
 `;
 
 exports[`Form rendering 2`] = `
-<div>
-  <h3>
-    Connection parameters
-  </h3>
+<div
+  className="well"
+>
   <form
     onSubmit={[Function]}
   >
@@ -124,7 +130,6 @@ exports[`Form rendering 2`] = `
       <div
         className="form-group"
       >
-        N
         <label
           htmlFor="mdcKeyInput"
         >
@@ -158,6 +163,7 @@ exports[`Form rendering 2`] = `
       </div>
       <div
         className="form-group"
+        id="log-prefix-input-div"
       >
         <label
           htmlFor="logPrefixInput"
@@ -173,41 +179,57 @@ exports[`Form rendering 2`] = `
           value="com.farpost.search"
         />
       </div>
-    </fieldset>
-    <div
-      className="form-group"
-    >
-      <div>
-        <label>
+      <div
+        className="form-group"
+        id="severity-input-div"
+      >
+        <label
+          htmlFor="severityInput"
+        >
           Severity
         </label>
+        <select
+          className="form-control"
+          id="severityInput"
+          name="severity"
+          onChange={[Function]}
+          value="INFO"
+        >
+          <option
+            value="TRACE"
+          >
+            TRACE
+          </option>
+          <option
+            value="DEBUG"
+          >
+            DEBUG
+          </option>
+          <option
+            value="INFO"
+          >
+            INFO
+          </option>
+          <option
+            value="WARN"
+          >
+            WARN
+          </option>
+          <option
+            value="ERROR"
+          >
+            ERROR
+          </option>
+        </select>
       </div>
-      <span
-        className="choosed-severity label label-primary"
-      >
-        INFO
-      </span>
-      <span
-        className="severity-button"
-      >
-        WARN
-      </span>
-      <span
-        className="severity-button"
-      >
-        ERROR
-      </span>
-      <span
-        className="severity-button"
-      >
-        DEBUG
-      </span>
-      <span
-        className="severity-button"
-      >
-        TRACE
-      </span>
-    </div>
+    </fieldset>
   </form>
+  <a
+    className="connection-form-button btn btn-danger"
+    href="#"
+    onClick={[Function]}
+  >
+    STOP
+  </a>
 </div>
 `;

@@ -20,7 +20,7 @@
 }
 
 .filters-filter-options {
-	max-height: 208px;
+	max-height: 256px;
 	overflow-y: scroll;
 	padding-right: 20px;
 }
@@ -36,6 +36,7 @@
 
 #messages-records-count {
 	margin-bottom: 10px;
+	margin-left: 12px;
 }
 
 .message-host-name,
@@ -47,39 +48,7 @@
 }
 
 .message-row {
-	border-top: 1px solid #eee;
-	padding: 20px 0 20px 0;
-}
-
-.message-tooltip {
-	position: relative;
-}
-
-.message-tooltip .message-tooltip-text {
-	visibility: hidden;
-	width: auto;
-	background-color: black;
-	color: #fff;
-	text-align: center;
-	padding: 4px 8px 4px 8px;
-	border-radius: 6px;
-	top: -30px;
-	position: absolute;
-	z-index: 1;
-}
-
-.message-tooltip .message-tooltip-text::after {
-	content: " ";
-	position: absolute;
-	top: 28px;
-	left: 36px;
-	margin-left: -5px;
-	border: 5px solid transparent;
-	border-top-color: black;
-}
-
-.message-tooltip:hover .message-tooltip-text {
-	visibility: visible;
+	margin-bottom: 20px;
 }
 
 .remove-filter.close {
@@ -109,4 +78,103 @@
 
 .zero-count-filter {
 	color: darkgray;
+}
+
+.container {
+	margin-top: 20px;
+}
+
+.connection-form-button {
+	width: 100%;
+}
+
+#messages-clear-button {
+	margin-left: 8px;
+}
+
+@media (min-width: 1400px){
+	.container {
+		width:1370px;
+	}
+}
+
+@media (min-width: 1500px){
+	.container {
+		width:1470px;
+	}
+
+	.filters-filter-options {
+		max-height: 182px;
+	}
+
+	#log-prefix-input-div {
+		width: 177px;
+		margin-right: 20px;
+		display: inline-block;
+	}
+	#severity-input-div {
+		width: 100px;
+		display: inline-block;
+	}
+}
+
+@media (min-width: 1600px){
+	.container {
+		width:1570px;
+	}
+	#log-prefix-input-div {
+		width: 202px;
+	}
+}
+
+.filter-count-label {
+	display: inline-block;
+	margin-right: 8px;
+	font-weight: bold;
+}
+
+.checkbox+.checkbox, .radio+.radio {
+	margin-top: -10px;
+}
+
+.message-head {
+	padding-left: 12px;
+	height: 25px;
+	padding-top: 5px;
+	background: #f2f2f2;
+	position: relative;
+	font-size: 90%;
+}
+
+.message-host {
+	font-weight: bold;
+}
+
+.message-time {
+	padding-left: 20px;
+	background: url('/images/time_icon.png') left 1px no-repeat;
+}
+
+.message-time,
+.message-host,
+.message-group {
+	margin-right: 8px;
+	display: inline-block;
+}
+
+.message-thread {
+	position: absolute;
+	right: 12px;
+	top: 5px;
+	padding-left: 20px;
+	background: url(/images/thread_icon.png) left 2px no-repeat;
+}
+
+.message-content {
+	padding: 5px 12px 12px 12px;
+}
+
+.messages {
+	margin: 0 auto;
+	max-width: 1100px;
 }

@@ -8,6 +8,8 @@ describe('Form', () => {
 	const props = {
 		connectionParams: connectionParams,
 		isListening: false,
+		startListening: () => {},
+		stopListening: () => {},
 		updateCurrentConnectionParams: () => {}
 	};
 
@@ -40,18 +42,21 @@ describe('Form', () => {
 			checkKeyChanged('key', '#mdcKeyInput');
 			checkKeyChanged('value', '#mdcValueInput');
 			checkKeyChanged('prefix', '#logPrefixInput');
+			checkKeyChanged('severity', '#severityInput');
 		});
 
-		it('severity changed', done => {
-			const updateCurrentConnectionParams = (key, value) => {
-				expect(key).toBe('severity');
-				expect(value).toBe('WARN');
-				done();
-			};
-			const wrapper = mount(
-				<Form { ...props } updateCurrentConnectionParams={updateCurrentConnectionParams} />
-			);
-			wrapper.find('.severity-button').first().simulate('click');
+		it('start listening', done => {
+			const startListening = () => done();
+			mount(
+				<Form { ...props } startListening={startListening} />
+			).find('a').simulate('click');
+		});
+
+		it('stop listening', done => {
+			const stopListening = () => done();
+			mount(
+				<Form { ...props } isListening={true} stopListening={stopListening} />
+			).find('a').simulate('click');
 		});
 	});
 });

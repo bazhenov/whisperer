@@ -3,7 +3,6 @@ import Form from './Form.jsx'
 import Messages from './Messages.jsx'
 import Filters from './Filters.jsx';
 import MessagesCount from './MessagesCount.jsx';
-import Controls from './Controls.jsx'
 import ToManyMessagesAlert from './ToManyMessagesAlert.jsx'
 import { connect } from "react-redux";
 import {
@@ -70,33 +69,26 @@ export class App extends Component {
 		const messagesToDisplay = filtered.slice(0, MAX_MESSAGES_TO_DISPLAY);
 
 		return <div>
-			<nav className="navbar navbar-default">
-				<div className="container-fluid">
-					<div className="navbar-header">
-						<a className="navbar-brand" href="/">Whisperer</a>
-					</div>
-				</div>
-			</nav>
-
 			<div className="row">
-				<div className="col-md-4">
+				<div className="col-md-3">
 					<Form updateCurrentConnectionParams={this.updateCurrentConnectionParams} isListening={isListening}
-								connectionParams={this.state.currentConnectionParams} />
-					<Controls isListening={isListening} stopListening={stopListening} clearMessages={clearMessages}
-										startListening={this.handleStartListening} hasMessages={totalMessages > 0} />
+								connectionParams={this.state.currentConnectionParams} stopListening={stopListening}
+								startListening={this.handleStartListening} />
 				</div>
-				<div className="col-md-8">
+				<div className="col-md-9">
 					<Filters filters={filters} updateFilters={updateFilters} filtersValues={filtersValues} />
 				</div>
 			</div>
 
 			<div className="row">
 				<div className="col-md-12">
-					<MessagesCount totalCount={totalMessages} filteredCount={filteredCount} />
-					<Messages messages={messagesToDisplay} />
+					<div className="messages">
+						<MessagesCount totalCount={totalMessages} clearMessages={clearMessages} filteredCount={filteredCount} />
+						<Messages messages={messagesToDisplay} />
+						<ToManyMessagesAlert filteredCount={filteredCount} />
+					</div>
 				</div>
 			</div>
-			<ToManyMessagesAlert filteredCount={filteredCount} />
 		</div>;
 	}
 }

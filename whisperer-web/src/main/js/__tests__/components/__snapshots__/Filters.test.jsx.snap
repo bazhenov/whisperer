@@ -42,10 +42,10 @@ exports[`Filters interactions filters filtering 1`] = `
   }
   updateFilters={[Function]}
 >
-  <div>
-    <h3>
-      Filters
-    </h3>
+  <div
+    className="well"
+    id="filters"
+  >
     <div
       className="row"
     >
@@ -91,7 +91,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 3
               </span>
@@ -116,7 +116,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 5
               </span>
@@ -141,7 +141,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 0
               </span>
@@ -231,7 +231,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 5
               </span>
@@ -256,7 +256,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 3
               </span>
@@ -281,7 +281,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 1
               </span>
@@ -306,7 +306,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 0
               </span>
@@ -396,7 +396,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 5
               </span>
@@ -421,7 +421,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 3
               </span>
@@ -446,7 +446,7 @@ exports[`Filters interactions filters filtering 1`] = `
               className="filters-count"
             >
               <span
-                className="label label-default"
+                className="filter-count-label"
               >
                 0
               </span>
@@ -536,10 +536,10 @@ exports[`Filters interactions filters filtering 1`] = `
 `;
 
 exports[`Filters rendering 1`] = `
-<div>
-  <h3>
-    Filters
-  </h3>
+<div
+  className="well"
+  id="filters"
+>
   <div
     className="row"
   >
@@ -585,7 +585,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               3
             </span>
@@ -610,7 +610,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               5
             </span>
@@ -635,7 +635,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               0
             </span>
@@ -725,7 +725,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               5
             </span>
@@ -750,7 +750,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               3
             </span>
@@ -775,7 +775,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               1
             </span>
@@ -800,7 +800,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               0
             </span>
@@ -890,7 +890,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               5
             </span>
@@ -915,7 +915,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               3
             </span>
@@ -940,7 +940,7 @@ exports[`Filters rendering 1`] = `
             className="filters-count"
           >
             <span
-              className="label label-default"
+              className="filter-count-label"
             >
               0
             </span>

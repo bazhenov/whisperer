@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { SQUASHED_MESSAGE_ARGUMENT_LENGTH } from '../constants'
 
 export default class MessageArgument extends Component {
 
@@ -14,7 +15,8 @@ export default class MessageArgument extends Component {
 	}
 
 	render() {
-		if (this.state.isOpened) return <span>{this.props.text}</span>;
-		return <a href="#" onClick={this.handleClick}>{"{"}...{"}"}</a>
+		const text = this.props.text;
+		if (this.state.isOpened) return <span>{text}</span>;
+		return <a href="#" onClick={this.handleClick}>{text.substring(0, SQUASHED_MESSAGE_ARGUMENT_LENGTH)}...</a>
 	}
 }

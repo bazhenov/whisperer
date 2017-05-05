@@ -2,106 +2,77 @@
 
 exports[`Message 1`] = `
 <div
-  className="row message-row"
+  className="message-row"
 >
   <div
-    className="col-xs-3 message-row-left-col"
+    className="message-head"
   >
-    <div>
-      <small>
-        14:17:09.683
-      </small>
+    <div
+      className="message-time"
+    >
+      14:17:09.683
     </div>
     <div
-      className="message-host-name"
+      className="message-host"
     >
-      <strong>
-        http://search-coord5.akod.loc
-      </strong>
-    </div>
-    <div>
-      <div
-        className="message-tooltip"
-      >
-        <div
-          className="message-group-name"
-        >
-          c.f.s.CoordinatorSearchEngine
-        </div>
-        <span
-          className="message-tooltip-text"
-        >
-          com.farpost.search.CoordinatorSearchEngine
-        </span>
-      </div>
+      @
+      http://search-coord5.akod.loc
     </div>
     <div
-      className="message-thread-name"
+      className="message-group"
     >
-      thread: 
+      c.f.s.CoordinatorSearchEngine
+    </div>
+    <div
+      className="message-thread"
+    >
       qtp-12345
     </div>
   </div>
   <div
-    className="col-xs-9 message-row-right-col"
+    className="message-content"
   >
-    <div
-      className="message-block"
+    <span>
+      Delegating execution to command 
+    </span>
+    <span>
+      StagedSearchQuery
+    </span>
+    <span>
+      , query: '
+    </span>
+    <a
+      href="#"
+      onClick={[Function]}
     >
-      <span>
-        Delegating execution to command 
-      </span>
-      <a
-        href="#"
-        onClick={[Function]}
-      >
-        {
-        ...
-        }
-      </a>
-      <span>
-        , query: '
-      </span>
-      <a
-        href="#"
-        onClick={[Function]}
-      >
-        {
-        ...
-        }
-      </a>
-      <span>
-        ', sort: 
-      </span>
-      <span>
-        null
-      </span>
-      <span>
-        , facets: 
-      </span>
-      <a
-        href="#"
-        onClick={[Function]}
-      >
-        {
-        ...
-        }
-      </a>
-      <span>
-        , filter: '
-      </span>
-      <a
-        href="#"
-        onClick={[Function]}
-      >
-        {
-        ...
-        }
-      </a>
-      <span>
-        '
-      </span>
-    </div>
+      ftext contains('s
+      ...
+    </a>
+    <span>
+      ', sort: 
+    </span>
+    <span>
+      null
+    </span>
+    <span>
+      , facets: 
+    </span>
+    <span>
+      directoryId
+    </span>
+    <span>
+      , filter: '
+    </span>
+    <a
+      href="#"
+      onClick={[Function]}
+    >
+      siteId!='1632' an
+      ...
+    </a>
+    <span>
+      '
+    </span>
   </div>
 </div>
 `;

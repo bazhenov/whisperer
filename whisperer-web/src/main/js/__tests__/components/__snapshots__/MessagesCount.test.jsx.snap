@@ -1,27 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MessagesCount 1`] = `null`;
+exports[`MessagesCount rendering 1`] = `null`;
 
-exports[`MessagesCount 2`] = `
+exports[`MessagesCount rendering 2`] = `
 <div
   id="messages-records-count"
 >
   <strong>
     10
+    
+     records
   </strong>
-  
-   records
+  <a
+    className="btn btn-danger"
+    href="#"
+    id="messages-clear-button"
+    onClick={[Function]}
+  >
+    CLEAR
+  </a>
 </div>
 `;
 
-exports[`MessagesCount 3`] = `
+exports[`MessagesCount rendering 3`] = `
 <div
   id="messages-records-count"
 >
   <strong>
     5
+     (10)
+     records
   </strong>
-   (10)
-   records
+  <a
+    className="btn btn-danger"
+    href="#"
+    id="messages-clear-button"
+    onClick={[Function]}
+  >
+    CLEAR
+  </a>
 </div>
 `;
