@@ -16,7 +16,7 @@ export default class MessageArgument extends Component {
 
 	render() {
 		const text = this.props.text;
-		if (this.state.isOpened) return <span>{text}</span>;
+		if (this.state.isOpened) return <span className="argument-value">{text}</span>;
 		return <a href="#" onClick={this.handleClick}>{text.substring(0, SQUASHED_MESSAGE_ARGUMENT_LENGTH)}...</a>
 	}
 }

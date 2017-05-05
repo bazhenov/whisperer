@@ -17,7 +17,7 @@ export default class Message extends Component {
 			if (i < args.length) {
 				const arg = String(args[i]);
 				const key = 'a' + i;
-				const argumentEl = arg.length <= SQUASHED_MESSAGE_ARGUMENT_LENGTH ? <span key={key}>{arg}</span> :
+				const argumentEl = arg.length <= SQUASHED_MESSAGE_ARGUMENT_LENGTH ? <span className="argument-value" key={key}>{arg}</span> :
 					<MessageArgument key={key} text={arg} />;
 				values.push(argumentEl);
 			}
@@ -28,7 +28,12 @@ export default class Message extends Component {
 			<div className="message-head">
 				<div className="message-time">{moment(message.timestamp).format("HH:mm:ss.SSS")}</div>
 				<div className="message-host">@{message.host}</div>
-				<div className="message-group">{message.shortGroupName}</div>
+				<div className="message-group">
+					<div className="message-tooltip">
+						<div>{message.shortGroupName}</div>
+						<span className="message-tooltip-text">{message.group}</span>
+					</div>
+				</div>
 				<div className="message-thread">{message.thread}</div>
 			</div>
 			<div className="message-content">{ textParts }</div>

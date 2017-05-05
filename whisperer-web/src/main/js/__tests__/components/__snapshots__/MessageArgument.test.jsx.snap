@@ -18,7 +18,9 @@ exports[`MessageArgument 2`] = `
 <MessageArgument
   text="some text some text some text some text"
 >
-  <span>
+  <span
+    className="argument-value"
+  >
     some text some text some text some text
   </span>
 </MessageArgument>
